@@ -1,0 +1,63 @@
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar-wrapper {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.hamburger-btn {
+  color: var(--color-pink-deep);
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+.hamburger-btn:hover {
+  color: var(--color-pink-coral);
+}
+
+.main-content {
+  flex: 1;
+  background-color: var(--color-bg);
+  overflow-y: auto;
+}
+
+.content-header {
+  border-bottom: 2px solid var(--color-border);
+  background-color: var(--color-card-bg);
+}
+
+.content-header h1 {
+  font-family: 'Sniglet', cursive;
+  color: var(--color-pink-deep);
+  font-weight: 800;
+}
+
+.form-label {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-control {
+  padding: 12px 15px;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.card {
+  border-radius: 15px;
+  border: 2px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  
+  .sidebar-wrapper {
+    width: 100%;
+  }
+}

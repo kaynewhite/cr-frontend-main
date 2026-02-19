@@ -1,0 +1,68 @@
+<div class="dashboard-layout">
+  <div class="sidebar-wrapper"><app-sidebar [isOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar></div>
+  <div class="main-content">
+    <div class="content-header p-4">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link d-md-none p-0 me-2 hamburger-btn" (click)="toggleSidebar()">
+          <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+        </button>
+        <div>
+          <h1 class="mb-1">Inventory</h1>
+          <p class="text-muted mb-0">Manage your crafting materials</p>
+        </div>
+      </div>
+    </div>
+    <div class="content-body p-4">
+      <div class="row mb-4">
+        <div class="col-12 col-md-8 mb-3 mb-md-0">
+          <input type="text" class="form-control" placeholder="Search materials..." [(ngModel)]="searchQuery" (input)="searchMaterials()">
+        </div>
+        <div class="col-12 col-md-4">
+          <button class="btn btn-primary w-100" (click)="showAddModal = true">
+            <i class="bi bi-plus-lg me-2"></i>Add Material
+          </button>
+        </div>
+      </div>
+      @if (showAddModal) {
+        <div class="modal-overlay" (click)="showAddModal = false">
+          <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header"><h5>Add New Material</h5><button class="btn-close" (click)="showAddModal = false"></button></div>
+            <div class="modal-body">
+              <div class="mb-3"><label class="form-label">Material Name</label><input type="text" class="form-control" [(ngModel)]="newMaterial.name"></div>
+              <div class="mb-3"><label class="form-label">Quantity</label><input type="number" class="form-control" [(ngModel)]="newMaterial.quantity"></div>
+              <div class="mb-3"><label class="form-label">Cost Per Unit</label><input type="number" class="form-control" [(ngModel)]="newMaterial.costPerUnit" step="0.01"></div>
+              <div class="mb-3"><label class="form-label">Unit</label><select class="form-select" [(ngModel)]="newMaterial.unit"><option value="piece">Piece</option><option value="pack">Pack</option><option value="roll">Roll</option><option value="sheet">Sheet</option><option value="ream">Ream</option><option value="meter">Meter</option></select></div>
+              <div class="mb-3"><label class="form-label">Category</label><input type="text" class="form-control" [(ngModel)]="newMaterial.category"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" (click)="showAddModal = false">Cancel</button><button class="btn btn-primary" (click)="addMaterial()">Add Material</button></div>
+          </div>
+        </div>
+      }
+      <div class="card">
+        <div class="card-body">
+          @if (filteredMaterials.length > 0) {
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead><tr><th>Name</th><th>Quantity</th><th>Cost/Unit</th><th>Unit</th><th>Category</th><th>Actions</th></tr></thead>
+                <tbody>
+                  @for (material of filteredMaterials; track material.id) {
+                    <tr>
+                      <td>{{ material.name }}</td>
+                      <td>{{ material.quantity }}</td>
+                      <td>₱{{ material.costPerUnit.toFixed(2) }}</td>
+                      <td>{{ material.unit }}</td>
+                      <td><span class="badge bg-info">{{ material.category || 'N/A' }}</span></td>
+                      <td><button class="btn btn-sm btn-danger" (click)="deleteMaterial(material.id)"><i class="bi bi-trash"></i></button></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="empty-state text-center py-5"><i class="bi bi-inbox"></i><p>No materials found. Add your first material to get started!</p></div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

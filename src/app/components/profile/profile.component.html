@@ -1,0 +1,108 @@
+<div class="dashboard-layout">
+  <div class="sidebar-wrapper">
+    <app-sidebar [isOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar>
+  </div>
+
+  <div class="main-content">
+    <div class="content-header p-4">
+      <button class="btn btn-link d-md-none p-0 me-3 hamburger-btn" (click)="toggleSidebar()">
+        <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+      </button>
+      <h1 class="d-inline">Edit Profile</h1>
+      <p class="text-muted">Manage your personal information</p>
+    </div>
+
+    <div class="content-body p-4">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+          <div class="card">
+            <div class="card-body p-4">
+              @if (successMessage) {
+                <div class="alert alert-success" role="alert">
+                  {{ successMessage }}
+                </div>
+              }
+
+              @if (errorMessage) {
+                <div class="alert alert-danger" role="alert">
+                  {{ errorMessage }}
+                </div>
+              }
+
+              <form (ngSubmit)="saveProfile()">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Full Name</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="name" 
+                    [(ngModel)]="name"
+                    name="name"
+                    [disabled]="!isEditing"
+                    required
+                  >
+                </div>
+
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="email" 
+                    [(ngModel)]="email"
+                    name="email"
+                    [disabled]="!isEditing"
+                    required
+                  >
+                </div>
+
+                @if (currentUser) {
+                  <div class="mb-3">
+                    <label class="form-label">Subscription Plan</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      [value]="currentUser.subscriptionPlan.toUpperCase()"
+                      disabled
+                    >
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Member Since</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      [value]="currentUser.createdAt | date:'medium'"
+                      disabled
+                    >
+                  </div>
+                }
+
+                <div class="d-flex gap-2">
+                  @if (!isEditing) {
+                    <button type="button" class="btn btn-primary" (click)="toggleEdit()">
+                      <i class="bi bi-pencil me-2"></i>Edit Profile
+                    </button>
+                  }
+                  @if (isEditing) {
+                    <button type="submit" class="btn btn-success" [disabled]="isLoading">
+                      @if (!isLoading) {
+                        <i class="bi bi-check-lg me-2"></i><span>Save Changes</span>
+                      }
+                      @if (isLoading) {
+                        <span class="spinner-border spinner-border-sm me-2"></span><span>Saving...</span>
+                      }
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="toggleEdit()" [disabled]="isLoading">
+                      <i class="bi bi-x-lg me-2"></i>Cancel
+                    </button>
+                  }
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

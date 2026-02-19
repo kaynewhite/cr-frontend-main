@@ -1,0 +1,113 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <div class="sidebar-wrapper">
+    <app-sidebar [isOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="content-header p-4">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <button class="btn btn-link d-md-none p-0 me-3 hamburger-btn" (click)="toggleSidebar()">
+            <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+          </button>
+          <h1 class="d-inline">Welcome, User</h1>
+          <p class="text-muted mb-0">Here's an overview of your craft business</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    }
+
+    <!-- Dashboard Content -->
+    @if (!isLoading && summary) {
+      <div class="content-body p-4">
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-4 mb-3">
+            <div class="card stat-card">
+              <div class="card-body text-center">
+                <div class="stat-icon mb-2">
+                  <i class="bi bi-calculator-fill"></i>
+                </div>
+                <h3>{{ summary.totalCalculations }}</h3>
+                <p class="text-muted mb-0">Total Calculations</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4 mb-3">
+            <div class="card stat-card">
+              <div class="card-body text-center">
+                <div class="stat-icon mb-2">
+                  <i class="bi bi-currency-dollar"></i>
+                </div>
+                <h3>₱{{ summary.averageProfit.toFixed(2) }}</h3>
+                <p class="text-muted mb-0">Avg Profit (last 5)</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4 mb-3">
+            <div class="card stat-card">
+              <div class="card-body text-center">
+                <div class="stat-icon mb-2">
+                  <i class="bi bi-box-seam"></i>
+                </div>
+                <h3>{{ summary.totalMaterialsUsed }}</h3>
+                <p class="text-muted mb-0">Materials Used</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Calculations -->
+        <div class="card">
+          <div class="card-header">
+            <h4 class="mb-0">Recent Calculations (5)</h4>
+          </div>
+          <div class="card-body">
+            @if (summary.recentCalculations.length > 0) {
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Category</th>
+                      <th>Total Cost</th>
+                      <th>Profit</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (calc of summary.recentCalculations; track calc.id) {
+                      <tr>
+                        <td>{{ calc.name }}</td>
+                        <td><span class="badge bg-info">{{ calc.category }}</span></td>
+                        <td>₱{{ calc.totalCost.toFixed(2) }}</td>
+                        <td class="text-success">₱{{ calc.profitAmount.toFixed(2) }}</td>
+                        <td>{{ calc.createdAt | date:'short' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="empty-state text-center py-4">
+                <i class="bi bi-inbox"></i>
+                <p>No calculations yet. Start creating your first calculation!</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

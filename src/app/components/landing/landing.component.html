@@ -1,0 +1,76 @@
+<div class="landing-container">
+  <!-- Top Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light py-3">
+    <div class="container">
+      <div class="navbar-brand d-flex align-items-center">
+        <!-- Logo Placeholder -->
+        <div class="logo-placeholder me-3">
+          <div class="logo-circle"></div>
+        </div>
+        <span class="brand-name">Crafty Rachel</span>
+      </div>
+      <div class="ms-auto">
+        <button class="btn btn-secondary me-2" (click)="navigateToLogin()">LogIn</button>
+        <button class="btn btn-primary" (click)="navigateToSignup()">SignUp</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container main-content">
+    <div class="row justify-content-center align-items-center min-vh-75">
+      <div class="col-12 col-md-8 text-center">
+        <h1 class="display-1 mb-4">Landing Page</h1>
+        <p class="lead mb-4">Welcome to Crafty Rachel CR Calculator</p>
+        <p class="text-muted mb-5">
+          Calculate costs, track materials, and maximize your profits with our easy-to-use craft calculator.
+          Perfect for crafters, artisans, and small business owners.
+        </p>
+        <div class="cta-buttons">
+          <button class="btn btn-primary btn-lg me-3" (click)="navigateToSignup()">
+            Get Started - It's Free
+          </button>
+          <button class="btn btn-outline-secondary btn-lg" (click)="navigateToLogin()">
+            Sign In
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mt-5 mb-5">
+      <div class="col-12 col-md-4 text-center mb-4">
+        <div class="feature-card card p-4">
+          <div class="feature-icon mb-3">
+            <i class="bi bi-calculator-fill" style="font-size: 3rem;"></i>
+          </div>
+          <h3>Easy Calculations</h3>
+          <p class="text-muted">Calculate costs and profit margins with just a few clicks</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 text-center mb-4">
+        <div class="feature-card card p-4">
+          <div class="feature-icon mb-3">
+            <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
+          </div>
+          <h3>Material Tracking</h3>
+          <p class="text-muted">Keep track of your inventory and material costs</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 text-center mb-4">
+        <div class="feature-card card p-4">
+          <div class="feature-icon mb-3">
+            <i class="bi bi-graph-up" style="font-size: 3rem;"></i>
+          </div>
+          <h3>Profit Insights</h3>
+          <p class="text-muted">View trends and analytics to grow your business</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-4 mt-5">
+    <p class="text-muted">&copy; 2026 Crafty Rachel. Made to sell, made with love.</p>
+  </footer>
+</div>

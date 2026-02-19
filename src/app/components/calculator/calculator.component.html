@@ -1,0 +1,84 @@
+<div class="dashboard-layout">
+  <div class="sidebar-wrapper"><app-sidebar [isOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar></div>
+  <div class="main-content">
+    <div class="content-header p-4">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link d-md-none p-0 me-2 hamburger-btn" (click)="toggleSidebar()">
+          <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+        </button>
+        <div>
+          <h1 class="mb-1">CR Calculator</h1>
+          <p class="text-muted mb-0">Calculate your costs and suggested pricing</p>
+        </div>
+      </div>
+    </div>
+    <div class="content-body p-4">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card mb-4">
+            <div class="card-header"><h5>Project Details</h5></div>
+            <div class="card-body">
+              <div class="mb-3"><label class="form-label">Project Name *</label><input type="text" class="form-control" [(ngModel)]="calculationName" placeholder="e.g., Birthday Card Set"></div>
+              <div class="mb-3"><label class="form-label">Category *</label><input type="text" class="form-control" [(ngModel)]="category" placeholder="e.g., Cards, Packaging, etc."></div>
+            </div>
+          </div>
+          <div class="card mb-4">
+            <div class="card-header"><h5>Select Materials</h5></div>
+            <div class="card-body">
+              @if (materials.length > 0) {
+                <div class="materials-grid">
+                  @for (material of materials; track material.id) {
+                    <button class="btn btn-outline-primary btn-material" (click)="addMaterial(material)"><i class="bi bi-plus-circle me-2"></i>{{ material.name }}<br><small>₱{{ material.costPerUnit }}/{{ material.unit }}</small></button>
+                  }
+                </div>
+              } @else {
+                <p class="text-muted">No materials available. Please add materials in the Inventory section first.</p>
+              }
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h5>Selected Materials</h5></div>
+            <div class="card-body">
+              @if (selectedMaterials.length > 0) {
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead><tr><th>Material</th><th>Quantity</th><th>Cost/Unit</th><th>Subtotal</th><th>Action</th></tr></thead>
+                    <tbody>
+                      @for (material of selectedMaterials; track $index; let i = $index) {
+                        <tr>
+                          <td>{{ material.materialName }}</td>
+                          <td><input type="number" class="form-control form-control-sm" [value]="material.quantity" (input)="updateQuantity(i, +$any($event.target).value)" min="1"></td>
+                          <td>₱{{ material.costPerUnit.toFixed(2) }}</td>
+                          <td>₱{{ material.subtotal.toFixed(2) }}</td>
+                          <td><button class="btn btn-sm btn-danger" (click)="removeMaterial(i)"><i class="bi bi-trash"></i></button></td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              } @else {
+                <p class="text-muted text-center py-3">No materials selected yet. Click on materials above to add them.</p>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white"><h5 class="mb-0">Calculation Summary</h5></div>
+            <div class="card-body">
+              <div class="mb-3"><label class="form-label">Profit Margin (%)</label><input type="number" class="form-control" [(ngModel)]="profitMarginPercent" (input)="calculate()" min="0" max="1000"></div>
+              <hr>
+              <div class="calculation-result">
+                <div class="result-item"><span class="label">Total Cost:</span><span class="value">₱{{ totalCost.toFixed(2) }}</span></div>
+                <div class="result-item"><span class="label">Profit ({{ profitMarginPercent }}%):</span><span class="value text-success">₱{{ profitAmount.toFixed(2) }}</span></div>
+                <div class="result-item final"><span class="label">Suggested Price:</span><span class="value text-primary">₱{{ suggestedPrice.toFixed(2) }}</span></div>
+              </div>
+              <hr>
+              <button class="btn btn-success w-100" (click)="saveCalculation()" [disabled]="selectedMaterials.length === 0"><i class="bi bi-save me-2"></i>Save Calculation</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+.landing-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  background-color: var(--color-bg, #FFFFFF);
+  border-bottom: 2px solid var(--color-border, #E0E0E0);
+}
+
+.brand-name {
+  font-family: 'Sniglet', cursive;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-pink-deep);
+}
+
+.logo-placeholder {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-pink-coral), var(--color-orange));
+  border: 3px solid var(--color-pink-deep);
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 50px;
+}
+
+.min-vh-75 {
+  min-height: 75vh;
+}
+
+h1 {
+  font-family: 'Sniglet', cursive;
+  color: var(--color-pink-deep);
+  font-weight: 800;
+}
+
+h3 {
+  font-family: 'Sniglet', cursive;
+  color: var(--color-pink-coral);
+  font-size: 1.5rem;
+}
+
+.lead {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.5rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.cta-buttons .btn {
+  padding: 12px 40px;
+  font-size: 1.1rem;
+}
+
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  border-radius: 15px;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(231, 76, 108, 0.2);
+}
+
+.feature-icon i {
+  color: var(--color-orange);
+}
+
+footer {
+  background-color: var(--color-bg);
+  border-top: 2px solid var(--color-border);
+}
+
+.btn-outline-secondary {
+  border-color: var(--color-pink-deep);
+  color: var(--color-pink-deep);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--color-pink-deep);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  .cta-buttons .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .cta-buttons .btn.me-3 {
+    margin-right: 0 !important;
+  }
+}

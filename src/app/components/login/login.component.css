@@ -1,0 +1,89 @@
+.login-container {
+  background: linear-gradient(135deg, #FFF5F8 0%, #FFF9E6 100%);
+  min-height: 100vh;
+}
+
+.logo-placeholder {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-circle-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-pink-coral), var(--color-orange));
+  border: 5px solid var(--color-pink-deep);
+  box-shadow: 0 5px 15px rgba(231, 76, 108, 0.3);
+}
+
+.brand-name {
+  font-family: 'Sniglet', cursive;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-pink-deep);
+}
+
+.logo-section p {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.1rem;
+}
+
+.login-card {
+  border-radius: 20px;
+  border: none;
+  background-color: var(--color-card-bg);
+}
+
+.login-card h2 {
+  font-family: 'Sniglet', cursive;
+  color: var(--color-pink-deep);
+  font-weight: 800;
+}
+
+.form-label {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-control {
+  padding: 12px 15px;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.btn-lg {
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.alert-info {
+  background-color: #D4F1F4;
+  border-color: #75E6DA;
+  color: #05445E;
+  border-radius: 10px;
+  font-family: 'Fredoka', sans-serif;
+}
+
+a {
+  color: var(--color-pink-deep);
+  font-weight: 600;
+}
+
+a:hover {
+  color: var(--color-pink-coral);
+}
+
+@media (max-width: 768px) {
+  .login-card {
+    margin: 20px;
+  }
+  
+  .card-body {
+    padding: 30px !important;
+  }
+}

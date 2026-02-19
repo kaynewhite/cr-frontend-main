@@ -1,0 +1,49 @@
+<div class="dashboard-layout">
+  <div class="sidebar-wrapper"><app-sidebar [isOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar></div>
+  <div class="main-content">
+    <div class="content-header p-4">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link d-md-none p-0 me-2 hamburger-btn" (click)="toggleSidebar()">
+          <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+        </button>
+        <div>
+          <h1 class="mb-1">Calculation History</h1>
+          <p class="text-muted mb-0">View and manage your past calculations</p>
+        </div>
+      </div>
+    </div>
+    <div class="content-body p-4">
+      <div class="row mb-4">
+        <div class="col-md-6"><input type="text" class="form-control" placeholder="Search by name, category..." [(ngModel)]="searchQuery" (input)="applyFilters()"></div>
+        <div class="col-md-6"><select class="form-select" [(ngModel)]="sortBy" (change)="applyFilters()"><option value="date">Sort by Date</option><option value="profit">Sort by Profit</option><option value="name">Sort by Name</option></select></div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          @if (filteredCalculations.length > 0) {
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead><tr><th>Name</th><th>Category</th><th>Materials</th><th>Total Cost</th><th>Suggested Price</th><th>Profit</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody>
+                  @for (calc of filteredCalculations; track calc.id) {
+                    <tr>
+                      <td><strong>{{ calc.name }}</strong></td>
+                      <td><span class="badge bg-info">{{ calc.category }}</span></td>
+                      <td>{{ calc.materials.length }} items</td>
+                      <td>₱{{ calc.totalCost.toFixed(2) }}</td>
+                      <td>₱{{ calc.suggestedPrice.toFixed(2) }}</td>
+                      <td class="text-success"><strong>₱{{ calc.profitAmount.toFixed(2) }}</strong><br><small>({{ calc.profitMargin.toFixed(1) }}%)</small></td>
+                      <td>{{ calc.createdAt | date:'short' }}</td>
+                      <td><button class="btn btn-sm btn-danger" (click)="deleteCalculation(calc.id)"><i class="bi bi-trash"></i></button></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="empty-state text-center py-5"><i class="bi bi-inbox"></i><p>No calculations found. Start calculating to see your history!</p></div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

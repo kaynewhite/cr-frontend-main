@@ -1,0 +1,58 @@
+<div class="dashboard-layout">
+  <div class="sidebar-wrapper"><app-sidebar [isOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar></div>
+  <div class="main-content">
+    <div class="content-header p-4">
+      <button class="btn btn-link d-md-none p-0 me-3 hamburger-btn" (click)="toggleSidebar()">
+        <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+      </button>
+      <h1 class="d-inline">Subscription Plans</h1>
+      <p class="text-muted">Choose the plan that's right for you</p>
+    </div>
+    <div class="content-body p-4">
+      @if (currentSubscription && currentSubscription.currentPlan && currentSubscription.currentPlan !== 'free') {
+        <div class="alert alert-success mb-4">
+          <i class="bi bi-check-circle me-2"></i>
+          You are subscribed to the <strong>{{ currentSubscription.currentPlan.toUpperCase() }}</strong> plan
+        </div>
+      }
+      <div class="row">
+        @for (plan of plans; track plan.id) {
+          <div class="col-12 col-md-4 mb-4">
+            <div class="card plan-card" [class.current-plan]="isCurrentPlan(plan.name)">
+              <div class="card-body p-4">
+                <h3 class="text-center mb-3">{{ plan.displayName }}</h3>
+                <div class="price-tag text-center mb-4">
+                  <span class="price">₱{{ plan.price }}</span>
+                  <span class="period">/month</span>
+                </div>
+                <ul class="features-list">
+                  @for (feature of plan.features; track feature) {
+                    <li><i class="bi bi-check-circle-fill me-2"></i>{{ feature }}</li>
+                  }
+                </ul>
+                @if (plan.limitations && plan.limitations.length > 0) {
+                  <div class="limitations mt-3">
+                    @for (limitation of plan.limitations; track limitation) {
+                      <p class="text-muted small"><i class="bi bi-x-circle me-2"></i>{{ limitation }}</p>
+                    }
+                  </div>
+                }
+                <div class="text-center mt-4">
+                  @if (isCurrentPlan(plan.name)) {
+                    <button class="btn btn-secondary w-100" disabled>
+                      Current Plan
+                    </button>
+                  } @else {
+                    <button class="btn btn-primary w-100" (click)="changePlan(plan.name)" [disabled]="isLoading">
+                      <span>Select Plan</span>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
