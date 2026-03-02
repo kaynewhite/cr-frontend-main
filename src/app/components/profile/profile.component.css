@@ -33,7 +33,7 @@
 .content-header h1 {
   font-family: 'Sniglet', cursive;
   color: var(--color-pink-deep);
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .form-label {

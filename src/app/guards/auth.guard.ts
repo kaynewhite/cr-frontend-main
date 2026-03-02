@@ -6,22 +6,30 @@ export const authGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
+  try {
+    if (authService.isAuthenticated()) {
+      return true;
+    }
+    router.navigate(['/login']);
+    return false;
+  } catch (e) {
+    console.error('authGuard error:', e);
     return true;
   }
-
-  router.navigate(['/login']);
-  return false;
 };
 
 export const guestGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.isAuthenticated()) {
+  try {
+    if (!authService.isAuthenticated()) {
+      return true;
+    }
+    router.navigate(['/dashboard']);
+    return false;
+  } catch (e) {
+    console.error('guestGuard error:', e);
     return true;
   }
-
-  router.navigate(['/dashboard']);
-  return false;
 };

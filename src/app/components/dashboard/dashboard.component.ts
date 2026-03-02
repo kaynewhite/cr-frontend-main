@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CalculationService } from '../../services/calculation.service';
 import { MaterialService } from '../../services/material.service';
-import { CalculationSummary } from '../../models/calculation.model';
+import { CalculationSummary, Calculation } from '../../models/calculation.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,9 +15,12 @@ export class DashboardComponent implements OnInit {
   summary: CalculationSummary | null = null;
   isLoading: boolean = true;
   sidebarOpen: boolean = false;
+  recentSaved: Calculation[] = [];
+  savedLimit: number = Infinity;
+  Infinity = Infinity;
 
   constructor(
-    private calculationService: CalculationService,
+    public calculationService: CalculationService,
     private materialService: MaterialService
   ) {}
 
@@ -28,6 +31,16 @@ export class DashboardComponent implements OnInit {
   loadDashboard(): void {
     setTimeout(() => {
       this.summary = this.calculationService.getCalculationSummary();
+      // Show number of material types from inventory (each material type counts as 1)
+      const materials = this.materialService.getMaterials();
+      if (this.summary) {
+        this.summary.totalMaterialsUsed = materials.length;
+      }
+      // Load recent saved calculations (max 3 on dashboard for preview)
+      const allSaved = this.calculationService.getCalculations()
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      this.savedLimit = this.calculationService.getSavedLimit();
+      this.recentSaved = allSaved.slice(0, 3);
       this.isLoading = false;
     }, 500);
   }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Material } from '../models/material.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { SubscriptionService } from './subscription.service';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +66,10 @@ export class MaterialService {
     }
   ];
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private subscriptionService: SubscriptionService
+  ) {
     const userId = this.authService.currentUserValue?.id || 'guest';
     const key = `${this.MATERIALS_KEY}_${userId}`;
     
@@ -100,6 +104,15 @@ export class MaterialService {
   }
 
   addMaterial(material: Omit<Material, 'id' | 'createdAt' | 'updatedAt'>): Material {
+    // enforce inventory limit
+    const subscription = this.subscriptionService.getCurrentSubscription();
+    if (subscription) {
+      const limit = this.subscriptionService.getInventoryLimit(subscription.currentPlan);
+      if (this.materialsSubject.value.length >= limit) {
+        throw new Error('Inventory slot limit reached for your current plan');
+      }
+    }
+
     const newMaterial: Material = {
       ...material,
       id: Date.now().toString(),
@@ -113,6 +126,7 @@ export class MaterialService {
   }
 
   updateMaterial(id: string, updates: Partial<Material>): Material | null {
+    // allow update no matter what; inventory count not changed
     const materials = this.materialsSubject.value;
     const index = materials.findIndex(m => m.id === id);
     

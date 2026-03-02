@@ -33,7 +33,7 @@
 .content-header h1 {
   font-family: 'Sniglet', cursive;
   color: var(--color-pink-deep);
-  font-weight: 800;
+  font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
@@ -63,6 +63,7 @@
 .card {
   border-radius: 15px;
   border: 2px solid var(--color-border);
+  background-color: var(--color-card-bg);
 }
 
 .card-header {
@@ -72,6 +73,35 @@
   font-family: 'Sniglet', cursive;
 }
 
+body.dark-mode .card {
+  background-color: var(--color-card-bg);
+  border-color: #555;
+}
+
+body.dark-mode .card-header {
+  background-color: var(--color-sidebar) !important;
+  color: var(--color-text-dark) !important;
+}
+
+/* Dark mode for list-group items */
+body.dark-mode .list-group {
+  background-color: var(--color-card-bg) !important;
+}
+
+body.dark-mode .list-group-item {
+  background-color: var(--color-card-bg) !important;
+  border-color: #555 !important;
+  color: var(--color-text-dark) !important;
+}
+
+body.dark-mode .list-group-item:hover {
+  background-color: #2a2a2a !important;
+}
+
+body.dark-mode .list-group-item .fw-bold {
+  color: var(--color-text-dark) !important;
+}
+
 .table {
   font-family: 'Fredoka', sans-serif;
 }
@@ -79,6 +109,28 @@
 .table thead {
   background-color: var(--color-sidebar);
   color: var(--color-text);
+}
+
+/* Dark mode table fixes for dashboard */
+body.dark-mode .table {
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-text-dark) !important;
+}
+
+body.dark-mode .table th,
+body.dark-mode .table td {
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-text-dark) !important;
+  border-color: #555 !important;
+}
+
+body.dark-mode .table thead th {
+  background-color: var(--color-sidebar) !important;
+  color: var(--color-text-dark) !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+  background-color: #2a2a2a !important;
 }
 
 .empty-state i {

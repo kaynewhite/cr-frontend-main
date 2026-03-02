@@ -50,7 +50,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Sniglet', cursive;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 /* Primary Button */
@@ -98,24 +98,41 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s ease;
 }
 
+/* dark mode for cards */
+body.dark-mode .card {
+  background-color: var(--color-card-bg);
+  border-color: #555;
+}
+body.dark-mode .card-header {
+  background-color: var(--color-sidebar);
+  border-color: #444;
+}
+
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* Form Controls */
-.form-control {
-  border-radius: 10px;
-  border: 2px solid var(--color-border);
-  padding: 10px 15px;
-  font-family: 'Fredoka', sans-serif;
-  transition: all 0.3s ease;
+/* Form Controls Dark Mode Fix */
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #3a3a3a;
+  color: var(--color-text-dark);
+  border-color: #555;
 }
 
-.form-control:focus {
-  border-color: var(--color-pink-deep);
-  box-shadow: 0 0 0 0.2rem rgba(231, 76, 108, 0.25);
+body.dark-mode .form-control::placeholder,
+body.dark-mode .form-select option {
+  color: #aaa;
 }
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+  background-color: #3a3a3a;
+  color: var(--color-text-dark);
+  border-color: var(--color-pink-deep);
+}
+
 
 /* Sidebar */
 .sidebar {
@@ -174,23 +191,177 @@ h1, h2, h3, h4, h5, h6 {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Loading Spinner */
-.spinner-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+/* Link Styles */
+a {
+  color: var(--color-pink-deep);
+  transition: color 0.3s ease;
 }
 
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 50px 20px;
-  color: var(--color-text);
+a:hover {
+  color: var(--color-pink-coral);
+  text-decoration: underline;
+}
+
+body.dark-mode a {
+  color: var(--color-pink-medium);
+}
+
+body.dark-mode a:hover {
+  color: var(--color-pink-light);
+}
+
+/* Table Dark Mode Fix */
+body.dark-mode .table {
+  color: var(--color-text-dark) !important;
+  border-color: #555 !important;
+  background-color: var(--color-card-bg) !important;
+}
+
+body.dark-mode .table th,
+body.dark-mode .table td {
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-text-dark) !important;
+}
+
+body.dark-mode .table thead {
+  background-color: var(--color-sidebar) !important;
+  color: var(--color-text-dark) !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+  background-color: #2a2a2a;
+}
+
+/* striped rows in dark tables */
+body.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>* {
+  background-color: #232323 !important;
+}
+
+/* table responsive container background */
+body.dark-mode .table-responsive {
+  background-color: var(--color-card-bg) !important;
+}
+
+/* ensure table links/badges also adjust in dark mode */
+body.dark-mode .table a,
+body.dark-mode .table .badge {
+  color: var(--color-text-dark) !important;
+}
+
+/* Badge Dark Mode Fix */
+body.dark-mode .badge {
+  color: white;
+  background-color: var(--color-pink-deep);
+}
+
+body.dark-mode .badge.bg-info {
+  background-color: #4BC0C0 !important;
+  color: white;
+}
+
+body.dark-mode .table tbody th,
+body.dark-mode .table tbody td {
+  border-color: #444;
 }
 
 .empty-state i {
   font-size: 4rem;
   color: var(--color-pink-medium);
   margin-bottom: 20px;
+}
+
+/* Text utilities dark mode fix */
+body.dark-mode .text-muted {
+  color: #bbb !important;
+}
+
+body.dark-mode .text-success {
+  color: #22c55e !important;
+}
+
+body.dark-mode .small {
+  color: #bbb;
+}
+
+/* Ensure loading spinners are visible */
+body.dark-mode .spinner-border {
+  border-color: var(--color-pink-medium);
+  border-right-color: transparent;
+}
+
+/* Dark mode for list-group (used in dashboard) */
+body.dark-mode .list-group {
+  background-color: var(--color-card-bg) !important;
+}
+
+body.dark-mode .list-group-item {
+  background-color: var(--color-card-bg) !important;
+  border-color: #555 !important;
+  color: var(--color-text-dark) !important;
+}
+
+body.dark-mode .list-group-item:hover {
+  background-color: #2a2a2a !important;
+}
+
+body.dark-mode .list-group-item.active {
+  background-color: var(--color-pink-deep) !important;
+  border-color: var(--color-pink-deep) !important;
+}
+
+/* Improved global form styling */
+.form-control,
+.form-select {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  min-height: 42px;
+  transition: all 0.2s ease;
+}
+
+/* in case a component tries to override, re‑enforce basics */
+body .form-control,
+body .form-select {
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  padding: 12px 14px !important;
+  min-height: 42px !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-pink-deep);
+  box-shadow: 0 0 0 0.15rem rgba(231, 76, 108, 0.15) !important;
+  outline: none;
+}
+
+.form-label {
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+}
+
+/* Better selected materials table styling */
+.selected-materials {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid var(--color-border);
+}
+
+.selected-materials table {
+  font-size: 0.9rem;
+}
+
+.manual-add {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--color-border);
+}
+
+.manual-add h6 {
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
 }

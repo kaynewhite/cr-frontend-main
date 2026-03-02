@@ -16,7 +16,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent, canActivate: [guestGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'calculator', component: CalculatorComponent, canActivate: [authGuard] },
-  { path: 'history', component: HistoryComponent, canActivate: [authGuard] },
+  { path: 'saved', component: HistoryComponent, canActivate: [authGuard] },
   { path: 'inventory', component: InventoryComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'subscription', component: SubscriptionComponent, canActivate: [authGuard] },

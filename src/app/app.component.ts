@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,13 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'crafty-rachel';
+
+  constructor(private themeService: ThemeService) {}
+
+  ngOnInit(): void {
+    // Theme service initialization is handled by its constructor
+    // This ensures the theme is properly set on app startup
+  }
 }

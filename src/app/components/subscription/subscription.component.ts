@@ -15,6 +15,7 @@ export class SubscriptionComponent implements OnInit {
   currentSubscription: UserSubscription | null = null;
   isLoading: boolean = false;
   sidebarOpen: boolean = false;
+  sidebarCollapsed: boolean = false;
 
   constructor(private subscriptionService: SubscriptionService) {}
 
@@ -52,5 +53,9 @@ export class SubscriptionComponent implements OnInit {
 
   closeSidebar(): void {
     this.sidebarOpen = false;
+  }
+
+  toggleSidebarCollapse(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }

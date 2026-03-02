@@ -7,22 +7,50 @@
           <i class="bi bi-list" style="font-size: 1.8rem;"></i>
         </button>
         <div>
-          <h1 class="mb-1">Calculation History</h1>
-          <p class="text-muted mb-0">View and manage your past calculations</p>
+          <h1 class="mb-1">Saved Calculations</h1>
+          <p class="text-muted mb-0">View and manage your saved calculations</p>
         </div>
       </div>
     </div>
     <div class="content-body p-4">
       <div class="row mb-4">
-        <div class="col-md-6"><input type="text" class="form-control" placeholder="Search by name, category..." [(ngModel)]="searchQuery" (input)="applyFilters()"></div>
-        <div class="col-md-6"><select class="form-select" [(ngModel)]="sortBy" (change)="applyFilters()"><option value="date">Sort by Date</option><option value="profit">Sort by Profit</option><option value="name">Sort by Name</option></select></div>
+        <div class="col-md-6">
+          <input type="text" class="form-control" placeholder="Search saved calculations by name, category..." [(ngModel)]="searchQuery" (input)="applyFilters()" [disabled]="currentPlan !== 'pro'">
+        </div>
+        <div class="col-md-6">
+          <select class="form-select" [(ngModel)]="sortBy" (change)="applyFilters()" [disabled]="currentPlan !== 'pro'">
+            <option value="date">Sort by Date</option>
+            <option value="profit">Sort by Profit</option>
+            <option value="name">Sort by Name</option>
+          </select>
+        </div>
       </div>
+
       <div class="card">
         <div class="card-body">
-          @if (filteredCalculations.length > 0) {
+          <!-- show saved list for all plans; service already applies limits/expiry -->
+          @if (calculations.length > 0) {
+            <div class="mb-2 text-muted">
+              Plan: <strong>{{ currentPlan.toUpperCase() }}</strong> &ndash;
+              Saved <strong>{{ savedCount }}</strong>
+              / {{ calculationService.getSavedLimit() === Infinity ? '∞' : calculationService.getSavedLimit() }}
+              ({{ remainingSlots === Infinity ? '∞' : remainingSlots }} slots left)
+              &middot; expires after {{ calculationService.getExpiryDays() === Infinity ? 'never' : calculationService.getExpiryDays() + ' days' }}
+            </div>
             <div class="table-responsive">
               <table class="table table-hover">
-                <thead><tr><th>Name</th><th>Category</th><th>Materials</th><th>Total Cost</th><th>Suggested Price</th><th>Profit</th><th>Date</th><th>Actions</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Materials</th>
+                    <th>Total Cost</th>
+                    <th>Suggested Price</th>
+                    <th>Profit</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
                 <tbody>
                   @for (calc of filteredCalculations; track calc.id) {
                     <tr>
@@ -40,7 +68,7 @@
               </table>
             </div>
           } @else {
-            <div class="empty-state text-center py-5"><i class="bi bi-inbox"></i><p>No calculations found. Start calculating to see your history!</p></div>
+            <div class="empty-state text-center py-5"><i class="bi bi-inbox"></i><p>No saved calculations yet. Start calculating to save your first calculation!</p></div>
           }
         </div>
       </div>

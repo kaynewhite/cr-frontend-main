@@ -3,6 +3,10 @@
   min-height: 100vh;
 }
 
+body.dark-mode .login-container {
+  background: linear-gradient(135deg, #262626 0%, #1f1f1f 100%);
+}
+
 .logo-placeholder {
   width: 150px;
   height: 150px;
@@ -15,7 +19,10 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-pink-coral), var(--color-orange));
+  background-color: transparent;
+  background-image: url('/CRlogo.png');
+  background-size: cover;
+  background-position: center;
   border: 5px solid var(--color-pink-deep);
   box-shadow: 0 5px 15px rgba(231, 76, 108, 0.3);
 }
@@ -23,7 +30,7 @@
 .brand-name {
   font-family: 'Sniglet', cursive;
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 500;
   color: var(--color-pink-deep);
 }
 
@@ -41,17 +48,18 @@
 .login-card h2 {
   font-family: 'Sniglet', cursive;
   color: var(--color-pink-deep);
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .form-label {
+  margin-bottom: 10px;
   font-family: 'Fredoka', sans-serif;
   font-weight: 600;
   color: var(--color-text);
 }
 
 .form-control {
-  padding: 12px 15px;
+  padding: 12px 14px;
   font-family: 'Fredoka', sans-serif;
 }
 
@@ -67,6 +75,12 @@
   color: #05445E;
   border-radius: 10px;
   font-family: 'Fredoka', sans-serif;
+}
+
+body.dark-mode .alert-info {
+  background-color: rgba(75, 192, 192, 0.15);
+  border-color: #4BC0C0;
+  color: #87CEEB;
 }
 
 a {

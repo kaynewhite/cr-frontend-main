@@ -14,7 +14,7 @@ All user-side pages have been implemented with your brand colors (pink shades & 
 ### Protected Pages (Requires Login)
 - **Dashboard** (`/dashboard`) - Statistics & recent calculations
 - **Calculator** (`/calculator`) - Calculate costs, profit, suggested pricing
-- **History** (`/history`) - View & manage past calculations
+- **Saved** (`/saved`) - View & manage past calculations
 - **Inventory** (`/inventory`) - Manage materials (CRUD operations)
 - **Profile** (`/profile`) - Edit user information
 - **Subscription** (`/subscription`) - View & change plans (Free/Basic/Pro)
@@ -55,17 +55,15 @@ All user-side pages have been implemented with your brand colors (pink shades & 
 
 1. **Dashboard** - View your statistics
 2. **Inventory** - Click "Add Material" to add new materials
-3. **Calculator** - Select materials, set quantities, adjust profit margin, save
-4. **History** - See saved calculations, search, filter, sort
+3. **Calculator** - Add one or more materials (inventory or manual), set quantities and costs, adjust profit margin, and save a calculation (batch-based pricing). Free users get 3 calculations/month and 10 inventory slots; Basic ups those limits, Pro is unlimited.
+4. **Saved** - See saved calculations, search, filter, sort
 5. **Profile** - Edit your name/email
 6. **Subscription** - Try changing plans (simulated)
 
 ## 📱 Features
 
-- Real-time cost calculations
-- Automatic profit margin calculations
-- Material inventory management
-- Calculation history with search & filters
+- Plan-based limits and tiers (Free/Basic/Pro) with sliding calculation counts and inventory slots
+- Category restrictions: Free/basic use built-in categories; Pro users can add custom categories
 - User profile management
 - Subscription plan comparison
 - Dark/Light theme toggle
@@ -93,7 +91,7 @@ src/app/
 - Theme preference is saved automatically
 - Each user has separate data in localStorage
 - Materials can be reused across calculations
-- History is sorted newest first by default
+- Saved calculations are sorted newest first by default
 - Profit margin is customizable per calculation
 
 ## 🎊 Ready to Use!

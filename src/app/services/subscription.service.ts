@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
+import { CalculationService } from './calculation.service';
 import { SubscriptionPlan, UserSubscription } from '../models/subscription.model';
 import { AuthService } from './auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -18,14 +19,15 @@ export class SubscriptionService {
       displayName: 'Free Plan',
       price: 0,
       features: [
-        'Up to 10 calculations per month',
+        'Up to 3 calculations per month',
         'Basic material tracking',
-        'View calculation history (last 30 days)',
+        'Saved calculations cap of 3 (expires after 30 days)',
         'Simple profit calculator',
         'Email support'
       ],
       limitations: [
         'Limited to 10 materials in inventory',
+        'Cannot create custom categories',
         'No advanced reports',
         'Basic features only'
       ]
@@ -38,11 +40,14 @@ export class SubscriptionService {
       features: [
         'Unlimited calculations',
         'Advanced material management',
-        'Full calculation history',
-        'Profit trend charts',
-        'Export to PDF',
+        'Saved calculations cap of 10 (expires after 60 days)',
+        'Full saved calculations',
         'Priority email support',
-        'Up to 100 materials in inventory'
+        'Up to 50 materials in inventory'
+      ],
+      limitations: [
+        'Cannot create custom categories',
+        'No advanced analytics'
       ]
     },
     {
@@ -55,16 +60,12 @@ export class SubscriptionService {
         'Unlimited materials in inventory',
         'Advanced analytics and reports',
         'Custom categories',
-        'Bulk import/export',
-        'API access',
-        'Priority support (24/7)',
-        'Multiple user accounts',
-        'White-label reports'
+        'Priority support (24/7)'
       ]
     }
   ];
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private injector: Injector) {
     const userId = this.authService.currentUserValue?.id;
     const subscription = userId ? this.loadSubscription(userId) : null;
     this.subscriptionSubject = new BehaviorSubject<UserSubscription | null>(subscription);
@@ -97,6 +98,61 @@ export class SubscriptionService {
 
   getPlans(): SubscriptionPlan[] {
     return this.plans;
+  }
+
+  /**
+   * Inventory slot limit by plan. Infinity for unlimited.
+   */
+  getInventoryLimit(planName: 'free' | 'basic' | 'pro'): number {
+    switch (planName) {
+      case 'free':
+        return 10;
+      case 'basic':
+        return 50;
+      case 'pro':
+        return Infinity;
+    }
+  }
+
+  /**
+   * Calculation limit per month. Infinity for unlimited.
+   */
+  getCalculationLimit(planName: 'free' | 'basic' | 'pro'): number {
+    switch (planName) {
+      case 'free':
+        return 3;
+      case 'basic':
+      case 'pro':
+        return Infinity;
+    }
+  }
+
+  /**
+   * Whether custom categories may be created under this plan.
+   */
+  allowsCustomCategory(planName: 'free' | 'basic' | 'pro'): boolean {
+    return planName === 'pro';
+  }
+
+  /**
+   * Categories that are allowed by default for materials/inventory. Custom categories require PRO.
+   */
+  getBuiltInCategories(): string[] {
+    return ['Paper', 'Adhesive', 'Decoration', 'Paint', 'Cards', 'Packaging', 'Stationery'];
+  }
+
+  /**
+   * Special set of categories used by the pricing calculator.
+   * These do not affect material inventory categories.
+   */
+  getCalculatorCategories(): string[] {
+    return [
+      'General Printing',
+      'Business Cards',
+      'Flyers & Brochures',
+      'Flyers & Banners',
+      'Labels & Stickers'
+    ];
   }
 
   getPlanDetails(planName: 'free' | 'basic' | 'pro'): SubscriptionPlan | undefined {
@@ -142,6 +198,9 @@ export class SubscriptionService {
       observer.next(updatedSubscription);
       observer.complete();
     });
+    // after upgrade/downgrade, prune calculations according to new plan
+    const calcSvc = this.injector.get(CalculationService);
+    calcSvc.enforceLimits();
   }
 
   canAccessFeature(feature: string): boolean {

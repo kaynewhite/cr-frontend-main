@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { MaterialService } from '../../services/material.service';
 import { Material } from '../../models/material.model';
+import { SubscriptionService } from '../../services/subscription.service';
 
 @Component({
   selector: 'app-inventory',
@@ -18,6 +19,8 @@ export class InventoryComponent implements OnInit {
   showAddModal: boolean = false;
   editingMaterial: Material | null = null;
   sidebarOpen: boolean = false;
+  sidebarCollapsed: boolean = false;
+  isEditing: boolean = false;
   
   newMaterial = {
     name: '',
@@ -27,10 +30,31 @@ export class InventoryComponent implements OnInit {
     category: ''
   };
 
-  constructor(private materialService: MaterialService) {}
+  currentPlan: 'free' | 'basic' | 'pro' = 'free';
+  builtInCategories: string[] = [];
+
+  constructor(
+    private materialService: MaterialService,
+    public subscriptionService: SubscriptionService
+  ) {}
+
+  // expose inventory limit values for template
+  get inventoryLimit(): number {
+    return this.subscriptionService.getInventoryLimit(this.currentPlan);
+  }
+
+  get inventoryLimitDisplay(): string {
+    const lim = this.inventoryLimit;
+    return lim === Infinity ? '∞' : lim.toString();
+  }
 
   ngOnInit(): void {
     this.loadMaterials();
+    const sub = this.subscriptionService.getCurrentSubscription();
+    if (sub) {
+      this.currentPlan = sub.currentPlan;
+    }
+    this.builtInCategories = this.subscriptionService.getBuiltInCategories();
   }
 
   loadMaterials(): void {
@@ -52,10 +76,61 @@ export class InventoryComponent implements OnInit {
       return;
     }
 
-    this.materialService.addMaterial(this.newMaterial);
+    // Check for duplicates
+    const exists = this.materials.some(m => m.name.toLowerCase() === this.newMaterial.name.toLowerCase());
+    if (exists) {
+      alert('A material with this name already exists!');
+      return;
+    }
+
+    try {
+      if (this.isEditing && this.editingMaterial) {
+        // Update existing material
+        this.materialService.updateMaterial(this.editingMaterial.id, {
+          ...this.newMaterial
+        });
+        this.isEditing = false;
+        this.editingMaterial = null;
+      } else {
+        // Add new material
+        this.materialService.addMaterial(this.newMaterial);
+      }
+
+      this.loadMaterials();
+      this.showAddModal = false;
+      this.resetForm();
+    } catch (e: any) {
+      alert(e.message);
+    }
+  }
+
+  editMaterial(material: Material): void {
+    this.editingMaterial = material;
+    this.isEditing = true;
+    this.newMaterial = {
+      name: material.name,
+      quantity: material.quantity,
+      costPerUnit: material.costPerUnit,
+      unit: material.unit,
+      category: material.category || ''
+    };
+    this.showAddModal = true;
+  }
+
+  increaseQuantity(material: Material): void {
+    this.materialService.updateMaterial(material.id, {
+      quantity: material.quantity + 1
+    });
     this.loadMaterials();
-    this.showAddModal = false;
-    this.resetForm();
+  }
+
+  decreaseQuantity(material: Material): void {
+    if (material.quantity > 0) {
+      this.materialService.updateMaterial(material.id, {
+        quantity: material.quantity - 1
+      });
+      this.loadMaterials();
+    }
   }
 
   deleteMaterial(id: string): void {
@@ -67,6 +142,13 @@ export class InventoryComponent implements OnInit {
 
   resetForm(): void {
     this.newMaterial = { name: '', quantity: 0, costPerUnit: 0, unit: 'piece', category: '' };
+    this.isEditing = false;
+    this.editingMaterial = null;
+  }
+
+  closeModal(): void {
+    this.showAddModal = false;
+    this.resetForm();
   }
 
   toggleSidebar(): void {
@@ -75,5 +157,9 @@ export class InventoryComponent implements OnInit {
 
   closeSidebar(): void {
     this.sidebarOpen = false;
+  }
+
+  toggleSidebarCollapse(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }

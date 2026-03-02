@@ -2,6 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--color-bg, #FFFFFF);
 }
 
 .navbar {
@@ -12,7 +13,7 @@
 .brand-name {
   font-family: 'Sniglet', cursive;
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 500;
   color: var(--color-pink-deep);
 }
 
@@ -28,8 +29,23 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-pink-coral), var(--color-orange));
+  background-color: transparent;
+  background-image: url('/CRlogo.png');
+  background-size: cover;
+  background-position: center;
   border: 3px solid var(--color-pink-deep);
+}
+
+/* dark-mode text tweaks for landing */
+body.dark-mode .landing-container .brand-name {
+  color: var(--color-pink-light);
+}
+
+body.dark-mode .landing-container h1,
+body.dark-mode .landing-container h3,
+body.dark-mode .landing-container .lead,
+body.dark-mode .landing-container p {
+  color: var(--color-text-dark);
 }
 
 .main-content {

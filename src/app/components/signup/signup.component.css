@@ -3,6 +3,10 @@
   min-height: 100vh;
 }
 
+body.dark-mode .signup-container {
+  background: linear-gradient(135deg, #262626 0%, #1f1f1f 100%);
+}
+
 .signup-card {
   border-radius: 20px;
   border: none;
@@ -12,7 +16,7 @@
 .signup-card h2 {
   font-family: 'Sniglet', cursive;
   color: var(--color-pink-deep);
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .logo-placeholder {
@@ -39,7 +43,7 @@
 }
 
 .form-control {
-  padding: 12px 15px;
+  padding: 12px 14px;
   font-family: 'Fredoka', sans-serif;
 }
 

@@ -13,7 +13,9 @@ import { User } from '../../models/user.model';
 })
 export class SidebarComponent implements OnInit {
   @Input() isOpen: boolean = false;
+  @Input() isCollapsed: boolean = false;
   @Output() closeSidebar = new EventEmitter<void>();
+  @Output() toggleCollapse = new EventEmitter<void>();
   
   currentUser: User | null = null;
   isDarkMode: boolean = false;
@@ -48,6 +50,9 @@ export class SidebarComponent implements OnInit {
     this.closeSidebar.emit();
   }
 
+  toggleCollapseSidebar(): void {
+    this.toggleCollapse.emit();
+  }
   onOverlayClick(): void {
     this.closeSidebar.emit();
   }

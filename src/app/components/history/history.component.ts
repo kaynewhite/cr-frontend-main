@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CalculationService } from '../../services/calculation.service';
 import { Calculation } from '../../models/calculation.model';
+import { SubscriptionService } from '../../services/subscription.service';
 
 @Component({
   selector: 'app-history',
@@ -16,16 +17,31 @@ export class HistoryComponent implements OnInit {
   filteredCalculations: Calculation[] = [];
   searchQuery: string = '';
   sortBy: 'date' | 'profit' | 'name' = 'date';
+  remainingSlots: number = 0;
   sidebarOpen: boolean = false;
+  currentPlan: 'free' | 'basic' | 'pro' = 'free';
+  savedCount: number = 0;
+  Infinity = Infinity;
 
-  constructor(private calculationService: CalculationService) {}
+  constructor(
+    public calculationService: CalculationService,
+    private subscriptionService: SubscriptionService
+  ) {}
 
   ngOnInit(): void {
-    this.loadHistory();
+    const sub = this.subscriptionService.getCurrentSubscription();
+    if (sub) {
+      this.currentPlan = sub.currentPlan;
+    }
+    this.loadSaved();
+    this.remainingSlots = this.calculationService.getRemainingSlots();
   }
 
-  loadHistory(): void {
+  loadSaved(): void {
+    // always load calculations regardless of plan, but cap/expire is handled in service
     this.calculations = this.calculationService.getCalculations();
+    this.savedCount = this.calculations.length;
+    this.remainingSlots = this.calculationService.getRemainingSlots();
     this.applyFilters();
   }
 
@@ -41,7 +57,8 @@ export class HistoryComponent implements OnInit {
   deleteCalculation(id: string): void {
     if (confirm('Are you sure you want to delete this calculation?')) {
       this.calculationService.deleteCalculation(id);
-      this.loadHistory();
+      this.loadSaved();
+      this.remainingSlots = this.calculationService.getRemainingSlots();
     }
   }
 
