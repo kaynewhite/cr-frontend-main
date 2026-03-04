@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AuthService } from '../../services/auth.service';
+import { SidebarService } from '../../services/sidebar.service';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -11,7 +13,7 @@ import { User } from '../../models/user.model';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   name: string = '';
   email: string = '';
@@ -20,8 +22,15 @@ export class ProfileComponent implements OnInit {
   isEditing: boolean = false;
   isLoading: boolean = false;
   sidebarOpen: boolean = false;
+  sidebarCollapsed: boolean = false;
+  private sidebarSubscription: Subscription;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private sidebarService: SidebarService
+  ) {
+    this.sidebarSubscription = new Subscription();
+  }
 
   ngOnInit(): void {
     this.authService.currentUser.subscribe(user => {
@@ -30,6 +39,11 @@ export class ProfileComponent implements OnInit {
         this.name = user.name;
         this.email = user.email;
       }
+    });
+    
+    // Subscribe to sidebar collapsed state
+    this.sidebarSubscription = this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.sidebarCollapsed = collapsed;
     });
   }
 
@@ -70,4 +84,11 @@ export class ProfileComponent implements OnInit {
   closeSidebar(): void {
     this.sidebarOpen = false;
   }
-}
+
+  toggleSidebarCollapse(): void {
+    this.sidebarService.toggleCollapsed();
+  }
+
+  ngOnDestroy(): void {
+    this.sidebarSubscription.unsubscribe();
+  }}

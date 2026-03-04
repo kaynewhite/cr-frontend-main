@@ -30,6 +30,15 @@ export class AuthService {
       role: 'admin',
       subscriptionPlan: 'pro',
       createdAt: new Date()
+    },
+    {
+      id: '3',
+      name: 'SuperAdmin User',
+      email: 'superadmin@test.com',
+      password: 'superadmin123',
+      role: 'superadmin',
+      subscriptionPlan: 'pro',
+      createdAt: new Date()
     }
   ];
 
@@ -40,9 +49,18 @@ export class AuthService {
     );
     this.currentUser = this.currentUserSubject.asObservable();
     
-    // Initialize users in localStorage if not exists
-    if (!localStorage.getItem(this.USERS_KEY)) {
+    // Initialize users in localStorage - always check and update with latest mockUsers
+    const storedUsers = localStorage.getItem(this.USERS_KEY);
+    if (!storedUsers) {
       localStorage.setItem(this.USERS_KEY, JSON.stringify(this.mockUsers));
+    } else {
+      // Ensure all mock users exist in localStorage (in case new users were added)
+      const users = JSON.parse(storedUsers);
+      const superAdminExists = users.some((u: User) => u.email === 'superadmin@test.com');
+      if (!superAdminExists) {
+        const updatedUsers = [...users, this.mockUsers[2]]; // Add superadmin if missing
+        localStorage.setItem(this.USERS_KEY, JSON.stringify(updatedUsers));
+      }
     }
   }
 

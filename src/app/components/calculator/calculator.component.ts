@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CalculationService } from '../../services/calculation.service';
 import { MaterialService } from '../../services/material.service';
 import { SubscriptionService } from '../../services/subscription.service';
+import { SidebarService } from '../../services/sidebar.service';
 import { Material, MaterialInput } from '../../models/material.model';
 
 @Component({
@@ -14,7 +16,7 @@ import { Material, MaterialInput } from '../../models/material.model';
   templateUrl: './calculator.component.html',
   styleUrl: './calculator.component.css'
 })
-export class CalculatorComponent implements OnInit {
+export class CalculatorComponent implements OnInit, OnDestroy {
   // Product Info
   productName: string = '';
   category: string = '';
@@ -26,12 +28,8 @@ export class CalculatorComponent implements OnInit {
   wastePercentage: number = 5;
   profitMarginPercent: number = 50;
 
-  // Material management (inventory + manual)
+  // Material management (inventory)
   selectedMaterials: MaterialInput[] = [];
-  // temporary manual-add fields
-  manualMaterialName: string = '';
-  manualMaterialQuantity: number = 0;
-  manualMaterialCostPerUnit: number = 0;
 
   // Calculation Results
   materialCostTotal: number = 0;
@@ -51,6 +49,7 @@ export class CalculatorComponent implements OnInit {
   sidebarOpen: boolean = false;
   sidebarCollapsed: boolean = false;
   showResults: boolean = false;
+  private sidebarSubscription: Subscription;
 
   // Subscription & Calculations
   currentPlan: 'free' | 'basic' | 'pro' = 'free';
@@ -62,12 +61,20 @@ export class CalculatorComponent implements OnInit {
     private calculationService: CalculationService,
     private materialService: MaterialService,
     public subscriptionService: SubscriptionService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private sidebarService: SidebarService
+  ) {
+    this.sidebarSubscription = new Subscription();
+  }
 
   ngOnInit(): void {
     this.materials = this.materialService.getMaterials();
     this.filteredMaterials = this.materials;
+    
+    // Subscribe to sidebar collapsed state
+    this.sidebarSubscription = this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.sidebarCollapsed = collapsed;
+    });
     
     // Load subscription info
     const subscription = this.subscriptionService.getCurrentSubscription();
@@ -107,27 +114,6 @@ export class CalculatorComponent implements OnInit {
     }
   }
 
-  addManualMaterial(): void {
-    if (!this.manualMaterialName || this.manualMaterialQuantity <= 0 || this.manualMaterialCostPerUnit <= 0) {
-      alert('Please provide name, quantity, and cost for the material');
-      return;
-    }
-
-    this.selectedMaterials.push({
-      materialId: 'manual-' + Date.now(),
-      materialName: this.manualMaterialName,
-      quantity: this.manualMaterialQuantity,
-      costPerUnit: this.manualMaterialCostPerUnit,
-      subtotal: this.manualMaterialQuantity * this.manualMaterialCostPerUnit
-    });
-
-    // reset manual fields
-    this.manualMaterialName = '';
-    this.manualMaterialQuantity = 0;
-    this.manualMaterialCostPerUnit = 0;
-
-    this.performPrivateCalculation();
-  }
 
   updateMaterialSubtotal(mat: MaterialInput): void {
     mat.subtotal = mat.quantity * mat.costPerUnit;
@@ -278,9 +264,6 @@ export class CalculatorComponent implements OnInit {
     this.productName = '';
     this.category = '';
     this.selectedMaterials = [];
-    this.manualMaterialName = '';
-    this.manualMaterialQuantity = 0;
-    this.manualMaterialCostPerUnit = 0;
     this.quantityProducedPerBatch = 1;
     this.printingCostPerUnit = 0;
     this.laborCostPerUnit = 0;
@@ -298,6 +281,10 @@ export class CalculatorComponent implements OnInit {
   }
 
   toggleSidebarCollapse(): void {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
+    this.sidebarService.toggleCollapsed();
+  }
+
+  ngOnDestroy(): void {
+    this.sidebarSubscription.unsubscribe();
   }
 }

@@ -53,6 +53,20 @@
           </div>
         }
       </div>
+      <!-- payment flow modal -->
+      <app-payment-modal *ngIf="showPaymentModal"
+                         [plan]="pendingPlan"
+                         [qrUrl]="currentQrUrl"
+                         (cancel)="onPaymentCancel()"
+                         (submit)="onPaymentSubmit($event)">
+      </app-payment-modal>
     </div>
+      <!-- payment flow modal -->
+      <app-payment-modal *ngIf="showPaymentModal"
+                         [plan]="pendingPlan"
+                         [qrUrl]="currentQrUrl"
+                         (cancel)="onPaymentCancel()"
+                         (submit)="onPaymentSubmit($event)">
+      </app-payment-modal>
   </div>
 </div>

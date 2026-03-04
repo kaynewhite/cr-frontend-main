@@ -1,0 +1,177 @@
+<div class="logs-layout">
+  <!-- Sidebar -->
+  <app-admin-sidebar 
+    [isOpen]="sidebarOpen" 
+    [isCollapsed]="sidebarCollapsed"
+    (closeSidebar)="onSidebarClose()"
+    (toggleCollapse)="onCollapseSidebar()">
+  </app-admin-sidebar>
+
+  <!-- Main Content -->
+  <div class="logs-main">
+    <!-- Header -->
+    <div class="logs-header">
+      <button class="sidebar-toggle" (click)="toggleSidebar()" title="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+      </button>
+      <div>
+        <h1>System Logs</h1>
+        <p class="superadmin-note">SuperAdmin Only - Complete audit trail</p>
+      </div>
+      <div class="header-actions">
+        <button class="export-btn" (click)="exportLogs()" *ngIf="filteredLogs.length > 0">📥 Export</button>
+      </div>
+    </div>
+
+    <div class="logs-container" *ngIf="!isLoading">
+    <!-- Tabs -->
+    <div class="tabs-section">
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'subscription'"
+        (click)="switchTab('subscription')"
+      >
+        📋 Subscription Logs ({{ subscriptionLogs.length }})
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'system'"
+        (click)="switchTab('system')"
+      >
+        ⚙️ System Logs ({{ systemLogs.length }})
+      </button>
+    </div>
+
+    <!-- Subscription Logs Tab -->
+    <div *ngIf="activeTab === 'subscription'" class="log-content">
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>From:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="dateRangeStart" 
+            (change)="onFilterChange()"
+          >
+        </div>
+        <div class="filter-group">
+          <label>To:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="dateRangeEnd" 
+            (change)="onFilterChange()"
+          >
+        </div>
+      </div>
+
+      <div *ngIf="filteredLogs.length > 0" class="logs-list">
+        <div class="log-entry subscription-log" *ngFor="let log of filteredLogs">
+          <div class="log-header">
+            <div class="log-action" [ngClass]="'action-' + $any(log).action">
+              {{ $any(log).action | uppercase }}
+            </div>
+            <div class="log-user">
+              <strong>User ID:</strong> {{ $any(log).userId }}
+            </div>
+            <div class="log-time">{{ $any(log).timestamp | date: 'short' }}</div>
+          </div>
+          <div class="log-body">
+            <div class="log-detail">
+              <span class="label">Plan:</span>
+              <span class="value">{{ $any(log).plan }}</span>
+            </div>
+            <div class="log-detail">
+              <span class="label">Cost:</span>
+              <span class="value">₱{{ $any(log).cost | number:'1.2-2' }}</span>
+            </div>
+            <div class="log-detail" *ngIf="$any(log).approvedBy">
+              <span class="label">Approved By:</span>
+              <span class="value">{{ $any(log).approvedBy }}</span>
+            </div>
+            <div class="log-detail" *ngIf="$any(log).feedback">
+              <span class="label">Feedback:</span>
+              <span class="value">{{ $any(log).feedback }}</span>
+            </div>
+            <div class="log-detail" *ngIf="$any(log).details">
+              <span class="label">Details:</span>
+              <span class="value">{{ $any(log).details }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="filteredLogs.length === 0" class="empty-state">
+        <p>No subscription logs found</p>
+      </div>
+    </div>
+
+    <!-- System Logs Tab -->
+    <div *ngIf="activeTab === 'system'" class="log-content">
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>Log Type:</label>
+          <select [(ngModel)]="logTypeFilter" (change)="onFilterChange()">
+            <option *ngFor="let type of logTypes" [value]="type">
+              {{ type === 'all' ? 'All Types' : (type | uppercase) }}
+            </option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>From:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="dateRangeStart" 
+            (change)="onFilterChange()"
+          >
+        </div>
+        <div class="filter-group">
+          <label>To:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="dateRangeEnd" 
+            (change)="onFilterChange()"
+          >
+        </div>
+        <button class="clear-btn" (click)="clearSystemLogs()" *ngIf="systemLogs.length > 0">
+          🗑️ Clear All Logs
+        </button>
+      </div>
+
+      <div *ngIf="filteredLogs.length > 0" class="logs-list">
+        <div class="log-entry system-log" *ngFor="let log of filteredLogs" [ngClass]="'type-' + $any(log).type">
+          <div class="log-header">
+            <span class="log-icon">{{ getLogTypeIcon($any(log).type) }}</span>
+            <div class="log-info">
+              <strong>{{ $any(log).type | uppercase }}</strong>
+              <span class="log-time">{{ $any(log).timestamp | date: 'short' }}</span>
+            </div>
+          </div>
+          <div class="log-body">
+            <p class="log-message">{{ $any(log).message }}</p>
+            <div class="log-meta" *ngIf="$any(log).userId || $any(log).adminId">
+              <span *ngIf="$any(log).userId">
+                <strong>User:</strong> {{ $any(log).userId }}
+              </span>
+              <span *ngIf="$any(log).adminId">
+                <strong>Admin:</strong> {{ $any(log).adminId }}
+              </span>
+            </div>
+            <div class="log-details" *ngIf="$any(log).details">
+              <code>{{ $any(log).details | json }}</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="filteredLogs.length === 0" class="empty-state">
+        <p>No system logs found</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading logs...</p>
+  </div>
+  </div>
+</div>

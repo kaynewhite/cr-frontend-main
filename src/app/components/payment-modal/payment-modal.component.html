@@ -1,0 +1,29 @@
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <h5>Select payment method</h5>
+    <div *ngIf="!method">
+      <button class="btn btn-outline-primary me-2" (click)="onMethodSelect('gcash')">GCash</button>
+      <button class="btn btn-outline-primary" (click)="onMethodSelect('maya')">Maya</button>
+    </div>
+
+    <div *ngIf="method">
+      <p>Method: {{ method.toUpperCase() }}</p>
+      <div *ngIf="qrUrl; else noQr">
+        <img [src]="qrUrl" class="qr-image" alt="QR Code" />
+      </div>
+      <ng-template #noQr>
+        <p class="text-muted">Our system is developing the qr code for you, please try another method of payment</p>
+      </ng-template>
+
+      <button class="btn btn-success mt-2" (click)="send()" [disabled]="!screenshotFile">
+        Done paying
+      </button>
+      <div class="mt-3">
+        <label>Upload screenshot</label>
+        <input type="file" accept="image/*" (change)="onScreenshotChange($event)" />
+      </div>
+    </div>
+
+    <button class="btn btn-link mt-3" (click)="cancel.emit()">Cancel</button>
+  </div>
+</div>

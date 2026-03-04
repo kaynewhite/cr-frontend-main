@@ -1,0 +1,1 @@
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000}.modal-content{background:var(--color-card-bg);padding:24px;border-radius:12px;max-width:400px;width:90%}.qr-image{max-width:100%;height:auto;display:block;margin:0 auto}

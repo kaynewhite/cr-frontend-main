@@ -1,5 +1,5 @@
 <div class="dashboard-layout">
-  <div class="sidebar-wrapper"><app-sidebar [isOpen]="sidebarOpen" (closeSidebar)="closeSidebar()"></app-sidebar></div>
+  <div class="sidebar-wrapper" [class.collapsed]="sidebarCollapsed"><app-sidebar [isOpen]="sidebarOpen" [isCollapsed]="sidebarCollapsed" (closeSidebar)="closeSidebar()" (toggleCollapse)="toggleSidebarCollapse()"></app-sidebar></div>
   <div class="main-content">
     <div class="content-header p-4">
       <div class="d-flex align-items-center">

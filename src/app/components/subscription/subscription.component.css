@@ -11,13 +11,29 @@
 .plan-card.current-plan {
   border-color: var(--color-pink-deep);
   border-width: 3px;
-  background-color: var(--color-pink-light);
+  background: linear-gradient(135deg, rgba(231, 76, 108, 0.1) 0%, rgba(255, 127, 80, 0.1) 100%);
+}
+.plan-card.current-plan h3 {
+  color: var(--color-pink-deep);
+}
+.plan-card.current-plan .price-tag .price {
+  color: var(--color-pink-deep);
 }
 
 /* dark mode for current plan highlight */
 body.dark-mode .plan-card.current-plan {
-  /* use card background so it meshes with dark mode cards */
-  background-color: var(--color-card-bg);
+  background: linear-gradient(135deg, rgba(231, 76, 108, 0.15) 0%, rgba(255, 127, 80, 0.15) 100%);
+  border-color: var(--color-pink-coral);
+}
+body.dark-mode .plan-card.current-plan h3,
+body.dark-mode .plan-card.current-plan .price-tag .price {
+  color: var(--color-pink-coral);
+}
+body.dark-mode .plan-card.current-plan {
+  color: var(--color-text-dark);
+}
+body.dark-mode .plan-card.current-plan .features-list li {
+  color: var(--color-text-dark);
 }
 .plan-card h3 { font-family: 'Sniglet', cursive; color: var(--color-pink-deep); font-size: 1.8rem; }
 .price-tag .price { font-size: 2.5rem; font-weight: 500; color: var(--color-pink-deep); font-family: 'Sniglet', cursive; }

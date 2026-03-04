@@ -33,3 +33,20 @@ export const guestGuard = () => {
     return true;
   }
 };
+
+export const adminGuard = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  try {
+    const user = (authService as any).currentUserValue;
+    if (user && (user.role === 'admin' || user.role === 'superadmin')) {
+      return true;
+    }
+    router.navigate(['/finalboss']);
+    return false;
+  } catch (e) {
+    console.error('adminGuard error:', e);
+    return true;
+  }
+};

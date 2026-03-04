@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CalculationService } from '../../services/calculation.service';
+import { SidebarService } from '../../services/sidebar.service';
 import { Calculation } from '../../models/calculation.model';
 import { SubscriptionService } from '../../services/subscription.service';
 
@@ -12,21 +14,26 @@ import { SubscriptionService } from '../../services/subscription.service';
   templateUrl: './history.component.html',
   styleUrl: './history.component.css'
 })
-export class HistoryComponent implements OnInit {
+export class HistoryComponent implements OnInit, OnDestroy {
   calculations: Calculation[] = [];
   filteredCalculations: Calculation[] = [];
   searchQuery: string = '';
   sortBy: 'date' | 'profit' | 'name' = 'date';
   remainingSlots: number = 0;
   sidebarOpen: boolean = false;
+  sidebarCollapsed: boolean = false;
   currentPlan: 'free' | 'basic' | 'pro' = 'free';
   savedCount: number = 0;
   Infinity = Infinity;
+  private sidebarSubscription: Subscription;
 
   constructor(
     public calculationService: CalculationService,
-    private subscriptionService: SubscriptionService
-  ) {}
+    private subscriptionService: SubscriptionService,
+    private sidebarService: SidebarService
+  ) {
+    this.sidebarSubscription = new Subscription();
+  }
 
   ngOnInit(): void {
     const sub = this.subscriptionService.getCurrentSubscription();
@@ -35,6 +42,11 @@ export class HistoryComponent implements OnInit {
     }
     this.loadSaved();
     this.remainingSlots = this.calculationService.getRemainingSlots();
+    
+    // Subscribe to sidebar collapsed state
+    this.sidebarSubscription = this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.sidebarCollapsed = collapsed;
+    });
   }
 
   loadSaved(): void {
@@ -68,5 +80,13 @@ export class HistoryComponent implements OnInit {
 
   closeSidebar(): void {
     this.sidebarOpen = false;
+  }
+
+  toggleSidebarCollapse(): void {
+    this.sidebarService.toggleCollapsed();
+  }
+
+  ngOnDestroy(): void {
+    this.sidebarSubscription.unsubscribe();
   }
 }

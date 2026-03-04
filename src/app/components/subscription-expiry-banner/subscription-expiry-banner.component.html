@@ -1,0 +1,38 @@
+<div *ngIf="showBanner" class="subscription-banner" [class.expired]="daysRemaining <= 0">
+  <div class="banner-content">
+    <div class="banner-icon">
+      @if (daysRemaining > 0) {
+        <i class="bi bi-exclamation-triangle"></i>
+      }
+      @if (daysRemaining <= 0) {
+        <i class="bi bi-x-circle"></i>
+      }
+    </div>
+    <div class="banner-text">
+      <strong>
+        @if (daysRemaining > 0) {
+          ⚠️ Subscription Ending Soon
+        }
+        @if (daysRemaining <= 0) {
+          🔴 Subscription Expired
+        }
+      </strong>
+      <p>
+        @if (daysRemaining > 0) {
+          Your subscription will expire in {{ daysRemaining }} day<span *ngIf="daysRemaining !== 1">s</span>
+        }
+        @if (daysRemaining <= 0) {
+          Your subscription has expired. Please renew to continue using premium features.
+        }
+      </p>
+    </div>
+    <div class="banner-actions">
+      <button class="extend-btn" (click)="extendSubscription()">
+        <i class="bi bi-calendar-plus"></i> Extend Now
+      </button>
+      <button class="close-btn" (click)="closeBanner()">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+  </div>
+</div>

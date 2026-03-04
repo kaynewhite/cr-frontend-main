@@ -1,0 +1,147 @@
+<div class="payment-layout">
+  <!-- Sidebar -->
+  <app-admin-sidebar 
+    [isOpen]="sidebarOpen" 
+    [isCollapsed]="sidebarCollapsed"
+    (closeSidebar)="onSidebarClose()"
+    (toggleCollapse)="onCollapseSidebar()">
+  </app-admin-sidebar>
+
+  <!-- Main Content -->
+  <div class="payment-main">
+    <!-- Header -->
+    <div class="approval-header">
+      <button class="sidebar-toggle" (click)="toggleSidebar()" title="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+      </button>
+      <div>
+        <h1>Payment Approvals</h1>
+        <p class="payment-count">{{ filteredPayments.length }} payment(s) found</p>
+      </div>
+    </div>
+
+    <div class="approval-container" *ngIf="!isLoading">
+    <!-- Filters -->
+    <div class="filter-section">
+      <div class="filter-group">
+        <label>Status:</label>
+        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="scanning">Scanning</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Search User:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearchChange()"
+          placeholder="Enter user ID"
+        >
+      </div>
+    </div>
+
+    <!-- Payments List -->
+    <div *ngIf="filteredPayments.length > 0" class="payments-section">
+      <div class="payment-card" *ngFor="let payment of filteredPayments">
+        <div class="payment-header" (click)="toggleExpanded(payment.id)">
+          <div class="payment-basic">
+            <h3>{{ payment.userId }}</h3>
+            <p class="payment-plan">{{ getPlanName(payment.plan) }} Plan</p>
+          </div>
+          <div class="payment-meta">
+            <span [ngClass]="'badge ' + getStatusBadgeClass(payment.status)">
+              {{ payment.status | uppercase }}
+            </span>
+            <span class="payment-date">{{ payment.createdAt | date: 'short' }}</span>
+          </div>
+          <button class="expand-btn">{{ expandedPaymentId === payment.id ? '−' : '+' }}</button>
+        </div>
+
+        <!-- Expanded Details -->
+        <div *ngIf="expandedPaymentId === payment.id" class="payment-details">
+          <div class="detail-row">
+            <label>User ID:</label>
+            <span>{{ payment.userId }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Plan:</label>
+            <span>{{ getPlanName(payment.plan) }} - ₱{{ getPlanPrice(payment.plan).toLocaleString() }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Payment Method:</label>
+            <span>{{ payment.method }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Status:</label>
+            <span [ngClass]="'badge ' + getStatusBadgeClass(payment.status)">
+              {{ payment.status | uppercase }}
+            </span>
+          </div>
+
+          <!-- QR Code -->
+          <div *ngIf="payment.qrUrl" class="qr-section">
+            <label>Payment QR Code:</label>
+            <img [src]="payment.qrUrl" alt="Payment QR" class="qr-image">
+          </div>
+
+          <!-- Screenshot -->
+          <div *ngIf="payment.screenshotUrl" class="screenshot-section">
+            <label>Transaction Screenshot:</label>
+            <img [src]="payment.screenshotUrl" alt="Transaction Screenshot" class="screenshot-image">
+          </div>
+
+          <!-- Feedback (if rejected) -->
+          <div *ngIf="payment.feedback" class="feedback-section">
+            <label>Rejection Feedback:</label>
+            <p class="feedback-text">{{ payment.feedback }}</p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons" *ngIf="payment.status === 'pending' || payment.status === 'scanning'">
+            <button class="approve-btn" (click)="approvePayment(payment)">
+              ✓ Approve Payment
+            </button>
+            
+            <div class="reject-section">
+              <textarea 
+                [(ngModel)]="payment.feedbackInput"
+                placeholder="Rejection reason..."
+                class="feedback-input"
+              ></textarea>
+              <button class="reject-btn" (click)="rejectPayment(payment)">
+                ✕ Reject Payment
+              </button>
+            </div>
+          </div>
+
+          <!-- Approved/Rejected State -->
+          <div *ngIf="payment.status === 'approved' || payment.status === 'rejected'" class="status-info">
+            <p class="status-message">
+              <span *ngIf="payment.status === 'approved'" class="success">✓ Payment has been approved</span>
+              <span *ngIf="payment.status === 'rejected'" class="danger">✕ Payment has been rejected</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredPayments.length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No payments found</h3>
+      <p>No payments match your current filters</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading payments...</p>
+  </div>
+  </div>
+</div>

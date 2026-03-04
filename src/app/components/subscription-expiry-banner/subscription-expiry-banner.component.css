@@ -1,0 +1,180 @@
+.subscription-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+  border-bottom: 3px solid #ffc107;
+  z-index: 9999;
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+.subscription-banner.expired {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  border-bottom-color: #dc3545;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.banner-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.banner-icon {
+  font-size: 24px;
+  min-width: 30px;
+}
+
+.subscription-banner .banner-icon {
+  color: #ff9800;
+}
+
+.subscription-banner.expired .banner-icon {
+  color: #dc3545;
+}
+
+.banner-text {
+  flex: 1;
+}
+
+.banner-text strong {
+  display: block;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.subscription-banner.expired strong {
+  color: #721c24;
+}
+
+.banner-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.subscription-banner.expired p {
+  color: #721c24;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.extend-btn {
+  padding: 10px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.extend-btn:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #333;
+  transform: rotate(90deg);
+}
+
+/* Add some top padding to the page content to account for banner */
+:host-context(body) {
+  --banner-height: 70px;
+}
+
+@media (max-width: 768px) {
+  .subscription-banner {
+    padding: 12px 16px;
+  }
+
+  .banner-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .banner-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .extend-btn {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .banner-text strong {
+    font-size: 14px;
+  }
+
+  .banner-text p {
+    font-size: 12px;
+  }
+}
+
+/* Dark mode support */
+body.dark-mode .subscription-banner {
+  background: linear-gradient(135deg, #664d03 0%, #8d6e1f 100%);
+  border-bottom-color: #ffc107;
+}
+
+body.dark-mode .subscription-banner.expired {
+  background: linear-gradient(135deg, #5a1e1e 0%, #7a2e2e 100%);
+  border-bottom-color: #dc3545;
+}
+
+body.dark-mode .banner-text strong {
+  color: #fff;
+}
+
+body.dark-mode .banner-text p {
+  color: #e0e0e0;
+}
+
+body.dark-mode .close-btn {
+  color: #bbb;
+}
+
+body.dark-mode .close-btn:hover {
+  color: #fff;
+}

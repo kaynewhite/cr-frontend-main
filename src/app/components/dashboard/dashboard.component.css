@@ -23,6 +23,8 @@
   flex: 1;
   background-color: var(--color-bg);
   overflow-y: auto;
+  padding-top: 70px;
+  position: relative;
 }
 
 .content-header {

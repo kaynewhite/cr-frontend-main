@@ -1,0 +1,142 @@
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <app-admin-sidebar 
+    [isOpen]="sidebarOpen" 
+    [isCollapsed]="sidebarCollapsed"
+    (closeSidebar)="onSidebarClose()"
+    (toggleCollapse)="onCollapseSidebar()">
+  </app-admin-sidebar>
+
+  <!-- Main Content -->
+  <div class="admin-main">
+    <!-- Header -->
+    <div class="admin-header">
+      <button class="sidebar-toggle" (click)="toggleSidebar()" title="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="admin-title">
+        <h1>Admin Dashboard</h1>
+        <p *ngIf="isSuperAdmin" class="superadmin-badge">SuperAdmin Mode</p>
+      </div>
+    </div>
+
+    <div class="admin-container" *ngIf="!isLoading">
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Monthly Revenue Card -->
+      <div class="dashboard-card revenue-card">
+        <div class="card-icon revenue-icon">💰</div>
+        <div class="card-content">
+          <h3>Monthly Revenue</h3>
+          <div class="revenue-amount">₱{{ monthlyRevenue.total.toLocaleString() }}</div>
+          <p class="revenue-subtitle">{{ monthlyRevenue.approvedCount }} approvals this month</p>
+        </div>
+      </div>
+
+      <!-- Pending Approvals Card -->
+      <div class="dashboard-card pending-card">
+        <div class="card-icon pending-icon">⏳</div>
+        <div class="card-content">
+          <h3>Pending Approvals</h3>
+          <div class="pending-count">{{ pendingPayments.length }}</div>
+          <button class="approve-all-btn" (click)="approvePendingPayments()" 
+            *ngIf="pendingPayments.length > 0"
+            [disabled]="isApprovingAll">
+            {{ isApprovingAll ? 'Processing...' : 'Approve All' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Total Users Card -->
+      <div class="dashboard-card users-card">
+        <div class="card-icon users-icon">👥</div>
+        <div class="card-content">
+          <h3>Total Users</h3>
+          <div class="users-count">3</div>
+          <button class="view-users-btn" (click)="viewUserManagement()">Manage Users</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Users Section -->
+    <div class="section">
+      <h2>Top 3 Most Active Users</h2>
+      <div class="users-list">
+        <div class="user-card" *ngFor="let user of topUsers">
+          <div class="user-info">
+            <h4>{{ user.name }}</h4>
+            <p class="user-email">{{ user.email }}</p>
+            <p class="user-subscription">Plan: <span class="badge">{{ user.subscription }}</span></p>
+          </div>
+          <div class="user-stats">
+            <div class="stat">
+              <span class="stat-value">{{ user.calculationCount }}</span>
+              <span class="stat-label">Calculations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Approvals Section -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Pending Payment Approvals</h2>
+        <button class="view-all-btn" (click)="viewPaymentApprovals()">View All</button>
+      </div>
+      
+      <div *ngIf="pendingPayments.length > 0" class="payments-list">
+        <div class="payment-item" *ngFor="let payment of pendingPayments.slice(0, 5)">
+          <div class="payment-info">
+            <h4>{{ payment.userId }}</h4>
+            <p class="payment-plan">Plan: {{ payment.plan }}</p>
+            <p class="payment-method">Method: {{ payment.method }}</p>
+          </div>
+          <div class="payment-date">
+            <span class="date-label">{{ payment.createdAt | date: 'short' }}</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="pendingPayments.length === 0" class="empty-state">
+        <p>No pending payments</p>
+      </div>
+    </div>
+
+    <!-- Admin Actions Section -->
+    <div class="section admin-actions">
+      <h2>Admin Actions</h2>
+      <div class="actions-grid">
+        <button class="action-btn approvals-btn" (click)="viewPaymentApprovals()">
+          <div class="action-icon">✓</div>
+          <div class="action-text">
+            <h4>Payment Approvals</h4>
+            <p>Review and approve payments</p>
+          </div>
+        </button>
+        
+        <button class="action-btn users-btn" (click)="viewUserManagement()">
+          <div class="action-icon">👥</div>
+          <div class="action-text">
+            <h4>User Management</h4>
+            <p>Manage user accounts</p>
+          </div>
+        </button>
+
+        <button class="action-btn logs-btn" (click)="viewSystemLogs()" *ngIf="isSuperAdmin">
+          <div class="action-icon">📋</div>
+          <div class="action-text">
+            <h4>System Logs</h4>
+            <p>View audit logs</p>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading dashboard...</p>
+  </div>
+  </div>
+</div>

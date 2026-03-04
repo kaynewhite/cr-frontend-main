@@ -1,0 +1,95 @@
+<div class="user-layout">
+  <!-- Sidebar -->
+  <app-admin-sidebar 
+    [isOpen]="sidebarOpen" 
+    [isCollapsed]="sidebarCollapsed"
+    (closeSidebar)="onSidebarClose()"
+    (toggleCollapse)="onCollapseSidebar()">
+  </app-admin-sidebar>
+
+  <!-- Main Content -->
+  <div class="user-main">
+    <!-- Header -->
+    <div class="management-header">
+      <button class="sidebar-toggle" (click)="toggleSidebar()" title="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+      </button>
+      <div>
+        <h1>User Management</h1>
+        <p class="user-count">{{ filteredUsers.length }} user(s) found</p>
+      </div>
+    </div>
+
+    <div class="management-container" *ngIf="!isLoading">
+    <!-- Filters -->
+    <div class="filter-section">
+      <div class="filter-group">
+        <label>Subscription Plan:</label>
+        <select [(ngModel)]="subscriptionFilter" (change)="onFilterChange()">
+          <option value="all">All Plans</option>
+          <option value="free">Free</option>
+          <option value="basic">Basic</option>
+          <option value="pro">Pro</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Search:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearchChange()"
+          placeholder="Name, email, or ID"
+        >
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="users-table-container" *ngIf="filteredUsers.length > 0">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Plan</th>
+            <th>Status</th>
+            <th>Calculations</th>
+            <th>Joined</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers" class="user-row">
+            <td class="user-name">{{ user.name }}</td>
+            <td class="user-email">{{ user.email }}</td>
+            <td class="user-plan">
+              <span class="badge" [ngClass]="'badge-' + user.subscription">
+                {{ getUserSubscriptionName(user.subscription) }}
+              </span>
+            </td>
+            <td class="user-status">
+              <span class="status-badge" [ngClass]="'status-' + user.status">
+                {{ user.status | uppercase }}
+              </span>
+            </td>
+            <td class="user-calc">{{ user.calculationCount }}</td>
+            <td class="user-date">{{ user.createdAt }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredUsers.length === 0" class="empty-state">
+      <div class="empty-icon">👥</div>
+      <h3>No users found</h3>
+      <p>No users match your current filters</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading users...</p>
+  </div>
+  </div>
+</div>

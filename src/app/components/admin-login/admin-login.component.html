@@ -1,0 +1,47 @@
+<div class="admin-login-container">
+  <div class="login-content">
+    <div class="login-card">
+      <h2>Admin Portal</h2>
+      <p class="subtitle">Crafty Rachel Administration</p>
+
+      <form (ngSubmit)="login()" class="login-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            [(ngModel)]="email" 
+            name="email"
+            placeholder="admin@test.com"
+            [disabled]="isLoading">
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            [(ngModel)]="password" 
+            name="password"
+            placeholder="••••••••"
+            [disabled]="isLoading">
+        </div>
+
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary w-100"
+          [disabled]="isLoading">
+          {{ isLoading ? 'Logging in...' : 'Login' }}
+        </button>
+      </form>
+
+      <p class="text-muted text-center mt-3">
+        <small>Demo: admin&#64;test.com / admin123</small>
+      </p>
+    </div>
+  </div>
+</div>

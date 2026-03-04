@@ -9,7 +9,7 @@
             <i class="bi bi-list" style="font-size: 1.8rem;"></i>
           </button>
           <div>
-            <h1 class="mb-1">Product Pricing Calculator</h1>
+            <h1 class="d-inline">Product Pricing Calculator</h1>
             <p class="text-muted mb-0">Calculate costs, margins & pricing for your products</p>
           </div>
         </div>
@@ -121,24 +121,7 @@
                 </table>
               </div>
 
-              <!-- Manual add section -->
-              <div class="manual-add mt-3">
-                <h6>Add Material Manually</h6>
-                <div class="row g-2 align-items-center">
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="Name" [(ngModel)]="manualMaterialName">
-                  </div>
-                  <div class="col-2">
-                    <input type="number" class="form-control" placeholder="Qty" [(ngModel)]="manualMaterialQuantity" min="0" step="0.01">
-                  </div>
-                  <div class="col-3">
-                    <input type="number" class="form-control" placeholder="Cost/unit" [(ngModel)]="manualMaterialCostPerUnit" min="0" step="0.01">
-                  </div>
-                  <div class="col-auto">
-                    <button class="btn btn-primary" (click)="addManualMaterial()">Add</button>
-                  </div>
-                </div>
-              </div>
+
 
               <div class="input-group mt-3">
                 <label class="form-label">Quantity Produced per Batch *</label>
@@ -154,15 +137,15 @@
           </div>
 
           <!-- Additional Costs Card -->
-          <div class="card">
+          <div class="card additional-costs">
             <div class="card-header">
               <h5 class="mb-0">Additional Costs per Unit</h5>
             </div>
             <div class="card-body">
-              <div class="input-group">
+              <div class="field-row">
                 <label class="form-label">Printing Cost</label>
-                <div class="price-input">
-                  <span class="currency">₱</span>
+                <div class="input-group">
+                  <span class="input-group-text">₱</span>
                   <input 
                     type="number" 
                     class="form-control" 
@@ -173,10 +156,10 @@
                 </div>
               </div>
 
-              <div class="input-group">
+              <div class="field-row">
                 <label class="form-label">Labor Cost</label>
-                <div class="price-input">
-                  <span class="currency">₱</span>
+                <div class="input-group">
+                  <span class="input-group-text">₱</span>
                   <input 
                     type="number" 
                     class="form-control" 
@@ -187,18 +170,18 @@
                 </div>
               </div>
 
-              <div class="input-group">
+              <div class="field-row waste-row">
                 <label class="form-label">Waste Percentage</label>
-                <div class="percentage-input">
+                <div class="input-group">
                   <input 
                     type="number" 
-                    class="form-control" 
+                    class="form-control waste-input" 
                     [(ngModel)]="wastePercentage" 
                     step="0.1"
                     min="0"
                     max="100"
                     placeholder="0">
-                  <span class="percent-symbol">%</span>
+                  <span class="input-group-text">%</span>
                 </div>
                 <small class="text-muted">Added to total costs</small>
               </div>
@@ -206,14 +189,14 @@
           </div>
 
           <!-- Margin Card -->
-          <div class="card">
+          <div class="card profit-margin">
             <div class="card-header">
               <h5 class="mb-0">Profit Margin</h5>
             </div>
             <div class="card-body">
-              <div class="input-group">
+              <div class="field-row profit-margin-row">
                 <label class="form-label">Desired Profit Margin (%)</label>
-                <div class="percentage-input">
+                <div class="input-group">
                   <input 
                     type="number" 
                     class="form-control" 
@@ -222,7 +205,7 @@
                     min="0"
                     max="1000"
                     placeholder="0">
-                  <span class="percent-symbol">%</span>
+                  <span class="input-group-text">%</span>
                 </div>
               </div>
             </div>

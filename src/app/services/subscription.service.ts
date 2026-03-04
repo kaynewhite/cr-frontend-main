@@ -36,7 +36,7 @@ export class SubscriptionService {
       id: 'basic',
       name: 'basic',
       displayName: 'Basic Plan',
-      price: 9.99,
+      price: 100,
       features: [
         'Unlimited calculations',
         'Advanced material management',
@@ -54,7 +54,7 @@ export class SubscriptionService {
       id: 'pro',
       name: 'pro',
       displayName: 'Pro Plan',
-      price: 19.99,
+      price: 250,
       features: [
         'Everything in Basic',
         'Unlimited materials in inventory',

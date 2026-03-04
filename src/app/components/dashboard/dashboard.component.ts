@@ -1,31 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { SubscriptionExpiryBannerComponent } from '../subscription-expiry-banner/subscription-expiry-banner.component';
 import { CalculationService } from '../../services/calculation.service';
 import { MaterialService } from '../../services/material.service';
+import { SidebarService } from '../../services/sidebar.service';
 import { CalculationSummary, Calculation } from '../../models/calculation.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, SidebarComponent],
+  imports: [CommonModule, SidebarComponent, SubscriptionExpiryBannerComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   summary: CalculationSummary | null = null;
   isLoading: boolean = true;
   sidebarOpen: boolean = false;
+  sidebarCollapsed: boolean = false;
   recentSaved: Calculation[] = [];
   savedLimit: number = Infinity;
   Infinity = Infinity;
+  private sidebarSubscription: Subscription;
 
   constructor(
     public calculationService: CalculationService,
-    private materialService: MaterialService
-  ) {}
+    private materialService: MaterialService,
+    private sidebarService: SidebarService
+  ) {
+    this.sidebarSubscription = new Subscription();
+  }
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.sidebarSubscription = this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.sidebarCollapsed = collapsed;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.sidebarSubscription.unsubscribe();
   }
 
   loadDashboard(): void {
@@ -51,5 +66,9 @@ export class DashboardComponent implements OnInit {
 
   closeSidebar(): void {
     this.sidebarOpen = false;
+  }
+
+  toggleSidebarCollapse(): void {
+    this.sidebarService.toggleCollapsed();
   }
 }

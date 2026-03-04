@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { MaterialService } from '../../services/material.service';
+import { SidebarService } from '../../services/sidebar.service';
 import { Material } from '../../models/material.model';
 import { SubscriptionService } from '../../services/subscription.service';
 
@@ -12,7 +14,7 @@ import { SubscriptionService } from '../../services/subscription.service';
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.css'
 })
-export class InventoryComponent implements OnInit {
+export class InventoryComponent implements OnInit, OnDestroy {
   materials: Material[] = [];
   filteredMaterials: Material[] = [];
   searchQuery: string = '';
@@ -21,7 +23,10 @@ export class InventoryComponent implements OnInit {
   sidebarOpen: boolean = false;
   sidebarCollapsed: boolean = false;
   isEditing: boolean = false;
-  
+  currentPlan: 'free' | 'basic' | 'pro' = 'free';
+  builtInCategories: string[] = [];
+  private sidebarSubscription: Subscription;
+
   newMaterial = {
     name: '',
     quantity: 0,
@@ -30,13 +35,13 @@ export class InventoryComponent implements OnInit {
     category: ''
   };
 
-  currentPlan: 'free' | 'basic' | 'pro' = 'free';
-  builtInCategories: string[] = [];
-
   constructor(
     private materialService: MaterialService,
-    public subscriptionService: SubscriptionService
-  ) {}
+    public subscriptionService: SubscriptionService,
+    private sidebarService: SidebarService
+  ) {
+    this.sidebarSubscription = new Subscription();
+  }
 
   // expose inventory limit values for template
   get inventoryLimit(): number {
@@ -55,6 +60,11 @@ export class InventoryComponent implements OnInit {
       this.currentPlan = sub.currentPlan;
     }
     this.builtInCategories = this.subscriptionService.getBuiltInCategories();
+    
+    // Subscribe to sidebar collapsed state
+    this.sidebarSubscription = this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.sidebarCollapsed = collapsed;
+    });
   }
 
   loadMaterials(): void {
@@ -160,6 +170,10 @@ export class InventoryComponent implements OnInit {
   }
 
   toggleSidebarCollapse(): void {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
+    this.sidebarService.toggleCollapsed();
+  }
+
+  ngOnDestroy(): void {
+    this.sidebarSubscription.unsubscribe();
   }
 }
