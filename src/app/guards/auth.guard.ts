@@ -8,6 +8,12 @@ export const authGuard = () => {
 
   try {
     if (authService.isAuthenticated()) {
+      const user = (authService as any).currentUserValue;
+      // if an admin tries to access the generic dashboard path, redirect them
+      if (user && (user.role === 'admin' || user.role === 'superadmin') && router.url === '/dashboard') {
+        router.navigate(['/admin-dashboard']);
+        return false;
+      }
       return true;
     }
     router.navigate(['/login']);
@@ -26,7 +32,13 @@ export const guestGuard = () => {
     if (!authService.isAuthenticated()) {
       return true;
     }
-    router.navigate(['/dashboard']);
+    // redirect authenticated users to their appropriate dashboard
+    const user = (authService as any).currentUserValue;
+    if (user && (user.role === 'admin' || user.role === 'superadmin')) {
+      router.navigate(['/admin-dashboard']);
+    } else {
+      router.navigate(['/dashboard']);
+    }
     return false;
   } catch (e) {
     console.error('guestGuard error:', e);

@@ -1,11 +1,11 @@
 <div class="user-layout">
   <!-- Sidebar -->
-  <app-admin-sidebar 
+  <app-sidebar 
     [isOpen]="sidebarOpen" 
     [isCollapsed]="sidebarCollapsed"
     (closeSidebar)="onSidebarClose()"
     (toggleCollapse)="onCollapseSidebar()">
-  </app-admin-sidebar>
+  </app-sidebar>
 
   <!-- Main Content -->
   <div class="user-main">
@@ -55,6 +55,7 @@
             <th>Status</th>
             <th>Calculations</th>
             <th>Joined</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -73,6 +74,14 @@
             </td>
             <td class="user-calc">{{ user.calculationCount }}</td>
             <td class="user-date">{{ user.createdAt }}</td>
+            <td class="user-actions">
+              <button *ngIf="user.status !== 'rejected'" class="btn btn-danger btn-sm" (click)="rejectUser(user)">
+                Reject
+              </button>
+              <button *ngIf="user.status === 'rejected'" class="btn btn-success btn-sm" (click)="reactivateUser(user)">
+                Reactivate
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>

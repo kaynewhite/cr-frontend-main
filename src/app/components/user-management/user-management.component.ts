@@ -5,22 +5,23 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { SubscriptionService } from '../../services/subscription.service';
 import { ThemeService } from '../../services/theme.service';
-import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 interface UserDetail {
   id: string;
   name: string;
   email: string;
   subscription: string;
-  status: string;
+  status: string; // will hold either 'active', subscription status or 'rejected'
   createdAt: string;
   calculationCount: number;
+  rejectionFeedback?: string;
 }
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
@@ -44,6 +45,8 @@ export class UserManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // ensure theme classes are applied
+    this.themeService.setTheme(this.themeService.getCurrentTheme());
     // Initialize theme
     this.themeService.isDarkMode$.subscribe(isDark => {
       this.isDarkMode = isDark;
@@ -84,9 +87,10 @@ export class UserManagementComponent implements OnInit {
       name: user.name,
       email: user.email,
       subscription: user.subscriptionPlan || 'free',
-      status: this.getSubscriptionStatus(user.id),
+      status: user.status === 'rejected' ? 'rejected' : this.getSubscriptionStatus(user.id),
       createdAt: new Date(user.createdAt).toLocaleDateString(),
-      calculationCount: calcCounts[user.id] || 0
+      calculationCount: calcCounts[user.id] || 0,
+      rejectionFeedback: user.rejectionFeedback
     }));
 
     this.applyFilters();
@@ -99,6 +103,36 @@ export class UserManagementComponent implements OnInit {
     
     const sub = JSON.parse(subStr);
     return sub.status || 'inactive';
+  }
+
+  rejectUser(user: UserDetail): void {
+    const feedback = prompt('Provide rejection feedback for user ' + user.name + ':');
+    if (feedback === null) {
+      return; // user cancelled
+    }
+    const stored = JSON.parse(localStorage.getItem('users') || '[]');
+    const idx = stored.findIndex((u: any) => u.id === user.id);
+    if (idx !== -1) {
+      stored[idx].status = 'rejected';
+      stored[idx].rejectionFeedback = feedback;
+      localStorage.setItem('users', JSON.stringify(stored));
+      alert('User has been marked as rejected. They will see a notice on their next login.');
+      this.loadUsers();
+    }
+  }
+
+  reactivateUser(user: UserDetail): void {
+    if (!confirm(`Are you sure you want to reactivate ${user.name}?`)) {
+      return;
+    }
+    const stored = JSON.parse(localStorage.getItem('users') || '[]');
+    const idx = stored.findIndex((u: any) => u.id === user.id);
+    if (idx !== -1) {
+      stored[idx].status = 'active';
+      delete stored[idx].rejectionFeedback;
+      localStorage.setItem('users', JSON.stringify(stored));
+      this.loadUsers();
+    }
   }
 
   applyFilters(): void {

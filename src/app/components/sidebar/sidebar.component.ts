@@ -20,6 +20,25 @@ export class SidebarComponent implements OnInit {
   currentUser: User | null = null;
   isDarkMode: boolean = false;
 
+  // convenience getters
+  get isAdmin(): boolean {
+    return this.currentUser?.role === 'admin' || this.currentUser?.role === 'superadmin';
+  }
+
+  get isSuperAdmin(): boolean {
+    return this.currentUser?.role === 'superadmin';
+  }
+
+  generateLink(base: string): string {
+    if (this.isAdmin) {
+      if (base === 'dashboard') {
+        return '/admin-dashboard';
+      }
+      return `/admin-${base}`;
+    }
+    return `/${base}`;
+  }
+
   constructor(
     private authService: AuthService,
     private themeService: ThemeService,

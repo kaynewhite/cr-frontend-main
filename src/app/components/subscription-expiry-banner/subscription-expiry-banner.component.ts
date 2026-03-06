@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { SubscriptionService } from '../../services/subscription.service';
 
 @Component({
   selector: 'app-subscription-expiry-banner',
@@ -17,6 +18,7 @@ export class SubscriptionExpiryBannerComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private subscriptionService: SubscriptionService,
     private router: Router
   ) {}
 
@@ -25,28 +27,18 @@ export class SubscriptionExpiryBannerComponent implements OnInit {
   }
 
   checkSubscriptionExpiry(): void {
-    const currentUser = (this.authService as any).currentUserValue;
-    if (!currentUser) {
+    const subscription = this.subscriptionService.getCurrentSubscription();
+    
+    if (!subscription || subscription.currentPlan === 'free') {
       this.showBanner = false;
       return;
     }
 
-    // Get subscription end date from localStorage
-    const subKey = `subscription_${currentUser.id}`;
-    const subscriptionData = localStorage.getItem(subKey);
+    const expiryDate = new Date(subscription.expiryDate);
+    this.expiryDate = expiryDate;
     
-    if (!subscriptionData) {
-      this.showBanner = false;
-      return;
-    }
-
-    const subscription = JSON.parse(subscriptionData);
-    const startDate = new Date(subscription.startDate);
-    const endDate = new Date(startDate.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days for 1 month
-    
-    this.expiryDate = endDate;
     const now = new Date();
-    const timeDiff = endDate.getTime() - now.getTime();
+    const timeDiff = expiryDate.getTime() - now.getTime();
     this.daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     // Show banner if within 7 days OR already expired

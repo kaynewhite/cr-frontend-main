@@ -78,13 +78,6 @@ body.dark-mode .management-header h1 {
 body.dark-mode .user-count {
   color: #aaa;
 }
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
 .back-btn:hover {
   background: #5a6268;
   transform: translateY(-2px);
@@ -204,6 +197,53 @@ body.dark-mode .users-table th {
 body.dark-mode .users-table td {
   border-bottom-color: #444;
   color: #aaa;
+}
+
+/* action button column */
+.user-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.user-actions .btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+/* responsive design */
+@media (max-width: 768px) {
+  .filter-section {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .users-table {
+    font-size: 0.85rem;
+  }
+  .users-table th,
+  .users-table td {
+    padding: 10px 8px;
+  }
+  .user-actions {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .user-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .users-table {
+    font-size: 0.75rem;
+  }
+  .users-table th,
+  .users-table td {
+    padding: 6px 4px;
+  }
+  .user-actions .btn {
+    padding: 2px 4px;
+    font-size: 0.65rem;
+  }
 }
 
 .user-row:hover {

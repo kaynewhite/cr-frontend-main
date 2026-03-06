@@ -187,6 +187,27 @@ body.dark-mode .form-select:focus {
   }
 }
 
+/* Admin layout container used by dashboard, approvals, user mgmt, etc. */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+/* global dark-mode fallbacks for any element missing specific styles */
+body.dark-mode .bg-white,
+body.dark-mode .card,
+body.dark-mode .modal-content,
+body.dark-mode .navbar,
+body.dark-mode .alert,
+body.dark-mode .section,
+body.dark-mode .container,
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-text-dark) !important;
+}
+
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }

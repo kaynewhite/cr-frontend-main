@@ -1,0 +1,51 @@
+.theme-toggle-global {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.1);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.theme-toggle-global:hover {
+  background: rgba(0,0,0,0.2);
+}
+
+.theme-toggle-global i {
+  font-size: 1.2rem;
+}
+
+/* rejection feedback overlay */
+.rejection-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+}
+.rejection-box {
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.rejection-box p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+}

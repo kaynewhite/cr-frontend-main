@@ -11,6 +11,16 @@
   animation: slideDown 0.3s ease-out;
 }
 
+body.dark-mode .subscription-banner {
+  background: linear-gradient(135deg, #444 0%, #555 100%);
+  border-bottom-color: #666;
+}
+
+body.dark-mode .subscription-banner.expired {
+  background: linear-gradient(135deg, #5a1a1a 0%, #702a2a 100%);
+  border-bottom-color: #dc3545;
+}
+
 .subscription-banner.expired {
   background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
   border-bottom-color: #dc3545;
@@ -60,6 +70,10 @@
   margin-bottom: 4px;
 }
 
+body.dark-mode .banner-text strong {
+  color: #ccc;
+}
+
 .subscription-banner.expired strong {
   color: #721c24;
 }
@@ -68,6 +82,10 @@
   margin: 0;
   font-size: 14px;
   color: #666;
+}
+
+body.dark-mode .banner-text p {
+  color: #aaa;
 }
 
 .subscription-banner.expired p {

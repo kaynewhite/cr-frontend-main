@@ -1,1 +1,107 @@
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000}.modal-content{background:var(--color-card-bg);padding:24px;border-radius:12px;max-width:400px;width:90%}.qr-image{max-width:100%;height:auto;display:block;margin:0 auto}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: var(--color-card-bg);
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  color: var(--color-text);
+}
+
+body.dark-mode .modal-content {
+  background: var(--color-card-bg);
+  color: var(--color-text-dark);
+  border: 1px solid #555;
+}
+
+.modal-content h5 {
+  color: var(--color-text);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+body.dark-mode .modal-content h5 {
+  color: var(--color-text-dark);
+}
+
+.modal-content label {
+  color: var(--color-text);
+  font-weight: 500;
+  margin-bottom: 10px;
+  display: block;
+}
+
+body.dark-mode .modal-content label {
+  color: var(--color-text-dark);
+}
+
+.modal-content input[type="file"] {
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px;
+  background: var(--color-bg);
+  width: 100%;
+}
+
+body.dark-mode .modal-content input[type="file"] {
+  background: #3a3a3a;
+  color: var(--color-text-dark);
+  border-color: #555;
+}
+
+.modal-content input[type="file"]::file-selector-button {
+  background: var(--color-pink-deep);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.modal-content input[type="file"]::file-selector-button:hover {
+  background: var(--color-pink-coral);
+}
+
+.qr-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.screenshot-preview {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.screenshot-preview img {
+  border-radius: 8px;
+  border: 2px solid var(--color-border);
+}
+
+body.dark-mode .screenshot-preview img {
+  border-color: #555;
+}
+
+.text-muted {
+  color: var(--color-text);
+  opacity: 0.7;
+}
+
+body.dark-mode .text-muted {
+  color: #aaa;
+}

@@ -7,7 +7,7 @@ import { PaymentService } from '../../services/payment.service';
 import { LogService } from '../../services/log.service';
 import { SubscriptionService } from '../../services/subscription.service';
 import { ThemeService } from '../../services/theme.service';
-import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 import { PaymentRequest } from '../../models/payment.model';
 
 interface PaymentWithDetails {
@@ -26,7 +26,7 @@ interface PaymentWithDetails {
 @Component({
   selector: 'app-payment-approval',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent],
   templateUrl: './payment-approval.component.html',
   styleUrls: ['./payment-approval.component.css']
 })
@@ -52,6 +52,8 @@ export class PaymentApprovalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // make sure theme classes applied
+    this.themeService.setTheme(this.themeService.getCurrentTheme());
     // Initialize theme
     this.themeService.isDarkMode$.subscribe(isDark => {
       this.isDarkMode = isDark;
@@ -136,15 +138,8 @@ export class PaymentApprovalComponent implements OnInit {
           timestamp: new Date().toISOString()
         }).subscribe();
 
-        // Update user subscription
-        const userSubscription = {
-          userId: payment.userId,
-          plan: payment.plan,
-          status: 'active',
-          startDate: new Date().toISOString(),
-          price: this.getPlanPrice(payment.plan)
-        };
-        localStorage.setItem(`subscription_${payment.userId}`, JSON.stringify(userSubscription));
+        // Update user subscription via service (handles localStorage & subjects)
+        this.subscriptionService.upgradePlanForUser(payment.userId, payment.plan as 'free' | 'basic' | 'pro').subscribe();
         
         // Reload payments
         this.loadPayments();

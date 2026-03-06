@@ -5,13 +5,13 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LogService } from '../../services/log.service';
 import { ThemeService } from '../../services/theme.service';
-import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 import { SubscriptionLog, SystemLog } from '../../models/subscription-log.model';
 
 @Component({
   selector: 'app-system-logs',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent],
   templateUrl: './system-logs.component.html',
   styleUrls: ['./system-logs.component.css']
 })
@@ -39,6 +39,8 @@ export class SystemLogsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // ensure theme classes applied
+    this.themeService.setTheme(this.themeService.getCurrentTheme());
     // Initialize theme
     this.themeService.isDarkMode$.subscribe(isDark => {
       this.isDarkMode = isDark;

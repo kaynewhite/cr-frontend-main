@@ -20,7 +20,8 @@ export class AuthService {
       password: 'user123',
       role: 'user',
       subscriptionPlan: 'free',
-      createdAt: new Date()
+      createdAt: new Date(),
+      status: 'active'
     },
     {
       id: '2',
@@ -29,7 +30,8 @@ export class AuthService {
       password: 'admin123',
       role: 'admin',
       subscriptionPlan: 'pro',
-      createdAt: new Date()
+      createdAt: new Date(),
+      status: 'active'
     },
     {
       id: '3',
@@ -38,7 +40,8 @@ export class AuthService {
       password: 'superadmin123',
       role: 'superadmin',
       subscriptionPlan: 'pro',
-      createdAt: new Date()
+      createdAt: new Date(),
+      status: 'active'
     }
   ];
 
@@ -100,7 +103,8 @@ export class AuthService {
         password,
         role: 'user',
         subscriptionPlan: 'free',
-        createdAt: new Date()
+        createdAt: new Date(),
+        status: 'active'
       };
 
       users.push(newUser);

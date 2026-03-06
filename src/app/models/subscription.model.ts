@@ -10,7 +10,8 @@ export interface SubscriptionPlan {
 export interface UserSubscription {
   userId: string;
   currentPlan: 'free' | 'basic' | 'pro';
-  startDate: Date;
-  expiryDate?: Date;
+  startDate: Date | string;
+  expiryDate: Date | string;
   isActive: boolean;
+  durationMonths?: number;
 }

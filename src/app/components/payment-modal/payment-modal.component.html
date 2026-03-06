@@ -12,16 +12,20 @@
         <img [src]="qrUrl" class="qr-image" alt="QR Code" />
       </div>
       <ng-template #noQr>
-        <p class="text-muted">Our system is developing the qr code for you, please try another method of payment</p>
+        <p class="text-muted">QR code not available for selected method.</p>
       </ng-template>
+
+      <div class="mt-3">
+        <label>Upload screenshot of payment proof</label>
+        <input type="file" accept="image/*" (change)="onScreenshotChange($event)" />
+        <div *ngIf="screenshotPreview" class="screenshot-preview mt-2">
+          <img [src]="screenshotPreview" alt="Screenshot Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+        </div>
+      </div>
 
       <button class="btn btn-success mt-2" (click)="send()" [disabled]="!screenshotFile">
         Done paying
       </button>
-      <div class="mt-3">
-        <label>Upload screenshot</label>
-        <input type="file" accept="image/*" (change)="onScreenshotChange($event)" />
-      </div>
     </div>
 
     <button class="btn btn-link mt-3" (click)="cancel.emit()">Cancel</button>

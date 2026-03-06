@@ -14,6 +14,7 @@ import { InventoryComponent } from './components/inventory/inventory.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { SubscriptionComponent } from './components/subscription/subscription.component';
 import { authGuard, guestGuard, adminGuard } from './guards/auth.guard';
+import { QrManagerComponent } from './components/qr-manager/qr-manager.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, canActivate: [guestGuard] },
@@ -22,9 +23,9 @@ export const routes: Routes = [
   { path: 'finalboss', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
   { path: 'admin-payments', component: PaymentApprovalComponent, canActivate: [adminGuard] },
+  { path: 'admin-qr', component: QrManagerComponent, canActivate: [adminGuard] },
   { path: 'admin-users', component: UserManagementComponent, canActivate: [adminGuard] },
   { path: 'admin-logs', component: SystemLogsComponent, canActivate: [adminGuard] },
-  { path: 'admin-calculator', component: CalculatorComponent, canActivate: [adminGuard] },
   { path: 'admin-inventory', component: InventoryComponent, canActivate: [adminGuard] },
   { path: 'admin-saved', component: HistoryComponent, canActivate: [adminGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },

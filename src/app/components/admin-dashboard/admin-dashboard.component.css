@@ -85,6 +85,7 @@ body.dark-mode .admin-title h1 {
 .admin-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 /* Dashboard Grid */
@@ -93,6 +94,14 @@ body.dark-mode .admin-title h1 {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
 }
 
 .dashboard-card {

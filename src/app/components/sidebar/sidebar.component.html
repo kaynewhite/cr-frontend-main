@@ -10,7 +10,13 @@
       <div class="d-flex align-items-center">
         <div class="logo-small me-2"></div>
         @if (!isCollapsed) {
-          <span class="brand-text">Costing Calculator</span>
+          <span class="brand-text">
+            @if (isAdmin) {
+              Admin Panel
+            } @else {
+              Costing Calculator
+            }
+          </span>
         }
       </div>
       <button class="btn btn-link p-0 d-none d-md-block collapse-toggle" (click)="toggleCollapseSidebar()" title="Toggle sidebar">
@@ -32,6 +38,9 @@
       </div>
       <h6 class="mb-0">Welcome, {{ currentUser.name }}</h6>
       <small class="text-muted">{{ currentUser.email }}</small>
+      @if (isSuperAdmin) {
+        <small class="text-warning d-block mt-1">SUPERADMIN</small>
+      }
     </div>
   }
   @if (currentUser && isCollapsed) {
@@ -44,25 +53,25 @@
 
   <!-- Navigation Links -->
   <nav class="sidebar-nav mt-3">
-    <a routerLink="/dashboard" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Dashboard' : ''">
+    <a [routerLink]="generateLink('dashboard')" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Dashboard' : ''">
       <i class="bi bi-speedometer2 me-2"></i>
       @if (!isCollapsed) {
         <span>Dashboard</span>
       }
     </a>
-    <a routerLink="/calculator" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Calculator' : ''">
+    <a [routerLink]="generateLink('calculator')" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Calculator' : ''">
       <i class="bi bi-calculator me-2"></i>
       @if (!isCollapsed) {
         <span>Calculator</span>
       }
     </a>
-    <a routerLink="/saved" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Saved' : ''">
+    <a [routerLink]="generateLink('saved')" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Saved' : ''">
       <i class="bi bi-bookmark me-2"></i>
       @if (!isCollapsed) {
         <span>Saved</span>
       }
     </a>
-    <a routerLink="/inventory" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Inventory' : ''">
+    <a [routerLink]="generateLink('inventory')" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Inventory' : ''">
       <i class="bi bi-box-seam me-2"></i>
       @if (!isCollapsed) {
         <span>Inventory</span>
@@ -74,12 +83,46 @@
         <span>Profile</span>
       }
     </a>
-    <a routerLink="/subscription" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Subscription' : ''">
-      <i class="bi bi-star me-2"></i>
-      @if (!isCollapsed) {
-        <span>Subscription</span>
+    <!-- hide subscription link for admins (they are always pro) -->
+    @if (!isAdmin) {
+      <a routerLink="/subscription" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Subscription' : ''">
+        <i class="bi bi-star me-2"></i>
+        @if (!isCollapsed) {
+          <span>Subscription</span>
+        }
+      </a>
+    }
+
+    <!-- admin-only links -->
+    @if (isAdmin) {
+      <hr />
+      <a routerLink="/admin-payments" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Payments' : ''">
+        <i class="bi bi-credit-card me-2"></i>
+        @if (!isCollapsed) {
+          <span>Payment Approvals</span>
+        }
+      </a>
+      <a routerLink="/admin-qr" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'QR' : ''">
+        <i class="bi bi-qr-code me-2"></i>
+        @if (!isCollapsed) {
+          <span>Manage QR</span>
+        }
+      </a>
+      <a routerLink="/admin-users" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Users' : ''">
+        <i class="bi bi-people me-2"></i>
+        @if (!isCollapsed) {
+          <span>Users</span>
+        }
+      </a>
+      @if (isSuperAdmin) {
+        <a routerLink="/admin-logs" routerLinkActive="active" class="nav-link" (click)="onNavigate()" [title]="isCollapsed ? 'Logs' : ''">
+          <i class="bi bi-file-text me-2"></i>
+          @if (!isCollapsed) {
+            <span>System Logs</span>
+          }
+        </a>
       }
-    </a>
+    }
   </nav>
 
   <!-- Theme Toggle & Logout -->

@@ -7,7 +7,7 @@ import { LogService } from '../../services/log.service';
 import { CalculationService } from '../../services/calculation.service';
 import { SubscriptionService } from '../../services/subscription.service';
 import { ThemeService } from '../../services/theme.service';
-import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -27,7 +27,7 @@ interface MonthlyRevenue {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, AdminSidebarComponent],
+  imports: [CommonModule, SidebarComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
@@ -55,6 +55,8 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // ensure body classes set for theme
+    this.themeService.setTheme(this.themeService.getCurrentTheme());
     // Initialize theme
     this.themeService.isDarkMode$.subscribe(isDark => {
       this.isDarkMode = isDark;
@@ -190,15 +192,8 @@ export class AdminDashboardComponent implements OnInit {
             timestamp: new Date().toISOString()
           }).subscribe();
 
-          // Update user subscription in localStorage
-          const userSubscription = {
-            userId: payment.userId,
-            plan: payment.plan,
-            status: 'active',
-            startDate: new Date().toISOString(),
-            price: plan?.price || 0
-          };
-          localStorage.setItem(`subscription_${payment.userId}`, JSON.stringify(userSubscription));
+          // update user subscription via service
+          this.subscriptionService.upgradePlanForUser(payment.userId, payment.plan).subscribe();
 
           approved++;
           if (approved === totalToApprove) {

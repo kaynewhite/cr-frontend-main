@@ -6,6 +6,10 @@ export interface User {
   role: 'user' | 'admin' | 'superadmin';
   subscriptionPlan: 'free' | 'basic' | 'pro';
   createdAt: Date;
+
+  // optional account state for admins to reject users
+  status?: 'active' | 'rejected';
+  rejectionFeedback?: string;
 }
 
 export interface UserProfile {

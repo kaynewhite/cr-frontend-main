@@ -10,6 +10,37 @@
   transition: width 0.3s ease;
 }
 
+/* Dark mode adjustments */
+body.dark-mode .sidebar-container {
+  background-color: var(--color-sidebar);
+  border-right-color: #444;
+}
+
+body.dark-mode .sidebar-header,
+body.dark-mode .sidebar-footer {
+  background-color: var(--color-card-bg);
+  border-bottom-color: #444;
+}
+
+body.dark-mode .brand-text {
+  color: var(--color-pink-coral);
+}
+
+body.dark-mode .nav-link {
+  color: var(--color-text-dark);
+}
+
+body.dark-mode .nav-link:hover,
+body.dark-mode .nav-link.active {
+  background-color: var(--color-pink-deep);
+  color: white;
+}
+
+body.dark-mode .sidebar-footer .btn {
+  color: var(--color-text-dark);
+}
+
+
 .sidebar-container.collapsed {
   width: 80px;
 }

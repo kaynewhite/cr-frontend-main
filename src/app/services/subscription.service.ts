@@ -9,8 +9,15 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class SubscriptionService {
   private readonly SUBSCRIPTION_KEY = 'userSubscription';
+  private readonly MAYA_QR_KEY = 'mayaQrUrl';
+  private readonly GCASH_QR_KEY = 'gcashQrUrl';
+
   private subscriptionSubject: BehaviorSubject<UserSubscription | null>;
   public subscription$: Observable<UserSubscription | null>;
+
+  // qr management observable, holds both urls
+  private qrSubject: BehaviorSubject<{ maya: string | null; gcash: string | null }>;
+  public qr$: Observable<{ maya: string | null; gcash: string | null }>;
 
   private plans: SubscriptionPlan[] = [
     {
@@ -70,24 +77,46 @@ export class SubscriptionService {
     const subscription = userId ? this.loadSubscription(userId) : null;
     this.subscriptionSubject = new BehaviorSubject<UserSubscription | null>(subscription);
     this.subscription$ = this.subscriptionSubject.asObservable();
+
+    // initialize qr observable with both stored values
+    const existingMaya = localStorage.getItem(this.MAYA_QR_KEY);
+    const existingGcash = localStorage.getItem(this.GCASH_QR_KEY);
+    this.qrSubject = new BehaviorSubject<{ maya: string | null; gcash: string | null }>({
+      maya: existingMaya,
+      gcash: existingGcash
+    });
+    this.qr$ = this.qrSubject.asObservable();
   }
 
   private loadSubscription(userId: string): UserSubscription | null {
     const key = `${this.SUBSCRIPTION_KEY}_${userId}`;
     const stored = localStorage.getItem(key);
     if (stored) {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      // Ensure expiryDate is set for consistency
+      if (!parsed.expiryDate) {
+        parsed.expiryDate = this.calculateExpiryDate(new Date(parsed.startDate), 30);
+      }
+      return parsed;
     }
     
     // Create default free subscription
+    const now = new Date();
     const defaultSubscription: UserSubscription = {
       userId,
       currentPlan: 'free',
-      startDate: new Date(),
+      startDate: now,
+      expiryDate: this.calculateExpiryDate(now, 30),
       isActive: true
     };
     localStorage.setItem(key, JSON.stringify(defaultSubscription));
     return defaultSubscription;
+  }
+
+  private calculateExpiryDate(startDate: Date, durationDays: number): Date {
+    const expiry = new Date(startDate);
+    expiry.setDate(expiry.getDate() + durationDays);
+    return expiry;
   }
 
   private saveSubscription(subscription: UserSubscription): void {
@@ -163,6 +192,40 @@ export class SubscriptionService {
     return this.subscriptionSubject.value;
   }
 
+  /* QR code for payments – stored globally, editable by admins */
+  // --- QR helpers ---
+  getMayaQr(): string | null {
+    return localStorage.getItem(this.MAYA_QR_KEY);
+  }
+
+  getGcashQr(): string | null {
+    return localStorage.getItem(this.GCASH_QR_KEY);
+  }
+
+  setMayaQr(url: string | null): void {
+    if (url === null) {
+      localStorage.removeItem(this.MAYA_QR_KEY);
+    } else {
+      localStorage.setItem(this.MAYA_QR_KEY, url);
+    }
+    this.qrSubject.next({
+      ...this.qrSubject.value,
+      maya: url
+    });
+  }
+
+  setGcashQr(url: string | null): void {
+    if (url === null) {
+      localStorage.removeItem(this.GCASH_QR_KEY);
+    } else {
+      localStorage.setItem(this.GCASH_QR_KEY, url);
+    }
+    this.qrSubject.next({
+      ...this.qrSubject.value,
+      gcash: url
+    });
+  }
+
   upgradePlan(newPlan: 'free' | 'basic' | 'pro'): Observable<UserSubscription> {
     return new Observable(observer => {
       const currentUser = this.authService.currentUserValue;
@@ -177,10 +240,12 @@ export class SubscriptionService {
         return;
       }
 
+      const now = new Date();
       const updatedSubscription: UserSubscription = {
         ...currentSubscription,
         currentPlan: newPlan,
-        startDate: new Date(),
+        startDate: now,
+        expiryDate: this.calculateExpiryDate(now, 30),
         isActive: true
       };
 
@@ -209,5 +274,58 @@ export class SubscriptionService {
 
     const plan = this.getPlanDetails(subscription.currentPlan);
     return plan ? plan.features.includes(feature) : false;
+  }
+
+  /**
+   * Admin helper: upgrade arbitrary user's subscription
+   */
+  upgradePlanForUser(userId: string, newPlan: 'free' | 'basic' | 'pro'): Observable<UserSubscription> {
+    return new Observable(observer => {
+      // load existing or default
+      const key = `${this.SUBSCRIPTION_KEY}_${userId}`;
+      let stored = localStorage.getItem(key);
+      let subscription: UserSubscription;
+      if (stored) {
+        subscription = JSON.parse(stored);
+      } else {
+        subscription = {
+          userId,
+          currentPlan: 'free',
+          startDate: new Date(),
+          expiryDate: this.calculateExpiryDate(new Date(), 30),
+          isActive: true
+        };
+      }
+
+      const now = new Date();
+      const updated: UserSubscription = {
+        ...subscription,
+        currentPlan: newPlan,
+        startDate: now,
+        expiryDate: this.calculateExpiryDate(now, 30),
+        isActive: true
+      };
+
+      localStorage.setItem(key, JSON.stringify(updated));
+
+      // if this is the currently logged-in user, update subject too
+      if (this.authService.currentUserValue?.id === userId) {
+        this.saveSubscription(updated);
+      }
+
+      // also update user's subscriptionPlan field if they exist
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const idx = users.findIndex((u: any) => u.id === userId);
+      if (idx !== -1) {
+        users[idx].subscriptionPlan = newPlan;
+        localStorage.setItem('users', JSON.stringify(users));
+        if (this.authService.currentUserValue?.id === userId) {
+          localStorage.setItem('currentUser', JSON.stringify(users[idx]));
+        }
+      }
+
+      observer.next(updated);
+      observer.complete();
+    });
   }
 }

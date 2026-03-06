@@ -3,11 +3,19 @@
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg, #FFFFFF);
+  color: var(--color-text);
 }
 
 .navbar {
-  background-color: var(--color-bg, #FFFFFF);
-  border-bottom: 2px solid var(--color-border, #E0E0E0);
+  background-color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border, #E0E0E0);
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode .navbar {
+  background-color: rgba(26,26,26,0.85);
+  border-bottom-color: #444;
 }
 
 .brand-name {
@@ -29,7 +37,6 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: transparent;
   background-image: url('/CRlogo.png');
   background-size: cover;
   background-position: center;
@@ -61,6 +68,7 @@ h1 {
   font-family: 'Sniglet', cursive;
   color: var(--color-pink-deep);
   font-weight: 800;
+  line-height: 1.2;
 }
 
 h3 {
@@ -74,6 +82,8 @@ h3 {
   font-size: 1.5rem;
   color: var(--color-text);
   font-weight: 500;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .cta-buttons .btn {
@@ -85,11 +95,12 @@ h3 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
   border-radius: 15px;
+  border: none;
 }
 
 .feature-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(231, 76, 108, 0.2);
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(231, 76, 108, 0.2);
 }
 
 .feature-icon i {
